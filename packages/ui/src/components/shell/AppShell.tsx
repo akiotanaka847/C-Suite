@@ -409,6 +409,15 @@ export function MobileBottomNav({
   return (
     <nav
       aria-label="Primary"
+      // The bar keeps its 4rem of touch target and grows by whatever the home
+      // indicator occupies. Installed to an iOS home screen the page paints
+      // edge to edge (viewportFit: "cover" in layout.tsx), so without this the
+      // bottom row of icons sits under the indicator and is awkward to tap.
+      // `env()` resolves to 0 everywhere else, so desktop is unaffected.
+      style={{
+        paddingBottom: "env(safe-area-inset-bottom)",
+        minHeight: "calc(4rem + env(safe-area-inset-bottom))",
+      }}
       className={`${hideClass} h-16 border-t border-line bg-surface-elevated flex items-stretch flex-shrink-0`}
     >
       {MOBILE_PRIMARY.map((item) => {

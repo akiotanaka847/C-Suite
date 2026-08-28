@@ -28,6 +28,6 @@ export default auth((req) => {
 // sensitive; anything under `public/` that does should not live there.
 export const config = {
   matcher: [
-    "/((?!api/auth|_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|brand/|signin/?$).*)",
+    "/((?!api/auth|_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|manifest.webmanifest|brand/|signin/?$).*)",
   ],
 };
