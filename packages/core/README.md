@@ -74,7 +74,7 @@ curl -X POST http://localhost:8000/documents \
 ```
 User message
     ↓
-Executive Orchestrator (claude-sonnet-4-6)
+Executive Orchestrator (claude-sonnet-5)
     ↓ tool use → parallel specialist calls
 CSO / CFO / CHRO / GC / COO / CMO / CPO / Board
     ↓ each specialist retrieves relevant context from ChromaDB
@@ -102,13 +102,6 @@ make eval         # Run eval suite
 make lint         # Run ruff + mypy
 make docker       # Build and run Docker stack
 ```
-
-## Contributing
-
-See [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md). All PRs must include:
-- Working implementation (no stubs)
-- Tests for new behavior
-- Eval scenarios for new agents or prompt changes
 
 ## License
 

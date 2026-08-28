@@ -17,8 +17,8 @@ system:
     backend: Python 3.11+ · FastAPI · Anthropic Claude SDK · ChromaDB · SQLite
     frontend: Next.js 15 · React 19 · TailwindCSS · Mermaid.js
   models:
-    default: claude-sonnet-4-6
-    deep_reasoning: claude-opus-4-7
+    default: claude-sonnet-5
+    deep_reasoning: claude-opus-5
     routing: claude-haiku-4-5
     provider_routing: |
       All LLM calls go through csuite.providers.get_provider(model).
@@ -54,7 +54,7 @@ system:
       API layer.
       Provider selection is per-call by model, not global — so the
       Executive can be on GPT-5 while the CFO specialist stays on
-      claude-opus-4-7 within the same turn.
+      claude-opus-5 within the same turn.
   invariants:
     - The internal sub-agent architecture is NEVER exposed to the end user — there is one voice (the Executive).
     - The Executive never signs messages under the name of company personnel or impersonates them. An identity addendum in system block 0 instructs the model to use its own exec name/email only.
@@ -1381,7 +1381,7 @@ external_monitoring:
          The research turn's model + deep-reasoning are controlled by the
          `research` virtual Council agent (get_research_model() /
          get_research_use_deep_reasoning(): Council override → `RESEARCH_MODEL`
-         env, default claude-sonnet-4-6 with deep reasoning OFF) — pinned
+         env, default claude-sonnet-5 with deep reasoning OFF) — pinned
          per-call via analyze_with_tools' overrides, NOT the agent's chat-time
          deep_reasoning_model (Opus 4.7). The research turn is
          retrieve-from-web-search + summarize, so the cheaper tier is the

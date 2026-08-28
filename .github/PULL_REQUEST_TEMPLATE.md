@@ -1,6 +1,6 @@
 <!--
-Thanks for contributing to C-Suite! Please fill out the sections below.
-See .github/CONTRIBUTING.md for the full contribution guide.
+Please fill out the sections below. The conventions this repo follows are in
+CLAUDE.md at the root.
 -->
 
 ## What & why

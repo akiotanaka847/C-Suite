@@ -95,7 +95,7 @@ El contexto RAG va en el **turno del usuario**, no en el system prompt.
    class YourAgent(BaseAgent):
        name = "your_agent"
        domain = "your_domain"
-       model = "claude-sonnet-4-6"
+       model = "claude-sonnet-5"
 
        def get_system_prompt(self) -> str:
            from csuite.prompts.domain_prompts import YOUR_AGENT_PROMPT

@@ -8,7 +8,7 @@ from csuite.providers import get_provider
 
 # The judge routes through the provider abstraction (like every other LLM call),
 # so when OPENROUTER_ENABLED is on, judging bills the OpenRouter account too.
-_JUDGE_MODEL = "claude-opus-4-7"
+_JUDGE_MODEL = "claude-opus-5"
 
 
 async def judge_chat(

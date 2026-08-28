@@ -27,7 +27,7 @@ All responses come from one consistent executive voice. The internal agent archi
 ```
 User message
     ↓
-Executive Orchestrator (claude-sonnet-4-6)
+Executive Orchestrator (claude-sonnet-5)
     ↓ tool use → parallel specialist calls
 CSO / CFO / CHRO / GC / COO / CMO / CPO / Board
     ↓ each specialist retrieves relevant context from ChromaDB
@@ -51,8 +51,8 @@ See [docs/architecture.md](docs/architecture.md) for the full design.
 | Layer | Choice |
 |---|---|
 | LLM backbone | Anthropic Claude API |
-| Default model | `claude-sonnet-4-6` (Executive + most specialists) |
-| Deep reasoning | `claude-opus-4-7` (CSO, CFO, GC, Board — with extended thinking) |
+| Default model | `claude-sonnet-5` (Executive + most specialists) |
+| Deep reasoning | `claude-opus-5` (CSO, CFO, GC, Board — with adaptive thinking) |
 | Backend | Python 3.11 + FastAPI |
 | Package manager | `uv` |
 | Vector store | ChromaDB (local, embedded) |
@@ -80,7 +80,8 @@ csuite/
 │   │       ├── audit/            # Audit logging
 │   │       ├── architecture/     # Internal architecture utilities
 │   │       ├── workflows/        # Multi-step workflow definitions
-│   │       └── cli.py            # Click CLI
+│   │       ├── mcp_proxy/        # In-repo MCP proxy (tool search + filters)
+│   │       └── cli/              # Click CLI + fixture loader
 │   └── ui/                       # Next.js 15 web UI
 ├── evals/                        # Eval scenarios + LLM-as-judge runner
 ├── fixtures/                     # Demo company fixtures (profiles, docs, rosters)
@@ -107,7 +108,14 @@ cp .env.example .env
 make dev
 ```
 
-Open http://localhost:3000 to start chatting with your executive. The API runs on port 8000 and the UI on 3000.
+The API runs on port 8000 and the UI on 3000.
+
+> **The web UI requires Google sign-in — there is no bypass.** Every page except
+> `/signin` is gated by [middleware.ts](packages/ui/src/middleware.ts), so
+> http://localhost:3000 shows a sign-in wall until you create a Google OAuth client
+> and fill in `packages/ui/.env.local`. See [docs/auth.md](docs/auth.md) for the
+> five-minute setup. To try the system without that, use the [CLI](#cli) —
+> `uv run csuite chat` needs nothing but `ANTHROPIC_API_KEY`.
 
 > **First run:** requires Python 3.11+ and Node 22+. The initial `uv sync` pulls heavy
 > ML dependencies (ChromaDB + sentence-transformers/PyTorch), and the first boot
@@ -183,15 +191,26 @@ After onboarding, the Executive will reference your specific company context in 
 | **Discord** | DM the bot, `@mention` it in a channel, or use `/ask` / `/today` slash commands |
 | **CLI** | `csuite chat` |
 
+## CLI
+
+The CLI talks to the Executive directly — no Google sign-in required, which makes
+it the fastest way to try the system before wiring up the web UI's OAuth.
+
+```bash
+cd packages/core
+
+uv run csuite chat                     # interactive session
+uv run csuite ask "question here"      # one-shot question
+uv run csuite onboard                  # set up or update the company profile
+uv run csuite ingest-oer               # download + index open-licensed textbooks
+uv run csuite consolidate-initiatives  # cluster duplicate active initiatives
+```
+
 ## Document Upload
 
 Upload your pitch deck, financial model, strategy docs, or any company documents via the web UI or API. The Executive will reference them when relevant.
 
 ```bash
-# Via CLI
-csuite upload deck.pdf model.xlsx strategy.md
-
-# Via API
 curl -X POST http://localhost:8000/documents \
   -F "file=@deck.pdf" \
   -F "domain=strategy"
@@ -267,13 +286,15 @@ the app refuses to start.
 | Variable | Required | Default | Description |
 |---|---|---|---|
 | `ANTHROPIC_API_KEY` | Yes¹ | — | Anthropic API key |
-| `DEFAULT_MODEL` | No | `claude-sonnet-4-6` | Executive + most specialists |
-| `DEEP_REASONING_MODEL` | No | `claude-opus-4-7` | CSO, CFO, GC, Board |
+| `DEFAULT_MODEL` | No | `claude-sonnet-5` | Executive + most specialists |
+| `DEEP_REASONING_MODEL` | No | `claude-opus-5` | CSO, CFO, GC, Board |
 | `VECTOR_STORE_PATH` | No | `./chroma_db` | ChromaDB directory |
 | `EPISODIC_DB_PATH` | No | `./episodic_memory.db` | SQLite for episodic memory |
 | `COMPANY_PROFILE_PATH` | No | `./company/profile.yaml` | Company profile |
 | `ENABLE_CACHING` | No | `true` | Anthropic prompt caching |
-| `ROUTING_MODEL` | No | `claude-haiku-4-5-20251001` | Model for intent routing |
+| `ROUTING_MODEL` | No | `claude-haiku-4-5-20251001` | Intent routing, titles, gates |
+| `RESEARCH_MODEL` | No | `claude-sonnet-5` | Research fan-out (dominant cost lever) |
+| `SPECIALIST_EFFORT` | No | `low` | Reasoning effort for deep-reasoning specialists |
 | `SLACK_BOT_TOKEN` | No | — | Slack bot OAuth token |
 | `SLACK_APP_TOKEN` | No | — | Slack socket mode token |
 | `EXEC_EMAIL_ADDRESS` | No | — | Executive Gmail address (Gmail MCP OAuth) |
@@ -364,18 +385,11 @@ pytest packages/core/tests/unit/ -v
 
 ## Evaluation System
 
-`evals/` contains 29 scenarios covering all 8 domains, scored by `claude-opus-4-7` as an LLM-as-judge. Each scenario defines a query, simulated company context, expected topics, required specialist routing, and a domain-specific rubric. Five scoring dimensions (persona coherence, domain accuracy, company context utilization, routing quality, actionability) are each rated 1–5. The CI gate requires ≥ 3.5/5 average; any dimension dropping > 10% vs `main` fails the PR.
+`evals/` contains 29 scenarios covering all 8 domains, scored by `claude-opus-5` as an LLM-as-judge. Each scenario defines a query, simulated company context, expected topics, required specialist routing, and a domain-specific rubric. Five scoring dimensions (persona coherence, domain accuracy, company context utilization, routing quality, actionability) are each rated 1–5. The CI gate requires ≥ 3.5/5 average; any dimension dropping > 10% vs `main` fails the PR.
 
 ## Privacy
 
 Everything in `company/` is gitignored — the profile YAML, uploaded documents, and the ChromaDB vector store. None of this leaves your local machine (or your own Fly volume in cloud deployments) except as part of prompts sent to the Anthropic API. Anthropic does not train on API data.
-
-## Contributing
-
-See [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md). All PRs must include:
-- Working implementation (no stubs)
-- Tests for new behavior
-- Eval scenarios for new agents or prompt changes
 
 ## License
 
