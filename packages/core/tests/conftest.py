@@ -9,6 +9,16 @@ import pytest
 os.environ.setdefault("ANTHROPIC_API_KEY", "sk-test-not-used")
 os.environ.setdefault("EXEC_EMAIL_ADDRESS", "ceo.test@example.com")
 
+# Aislar la suite del .env del desarrollador. Settings.model_config apunta a
+# <repo>/.env, así que en cuanto alguien sigue el Quick Start (`cp .env.example
+# .env`) sus valores se cuelan en los tests: ENABLE_WEB_SEARCH=false y las
+# variables de Honcho hacían fallar cinco tests que asumen los defaults del
+# código. CI no lo detectaba porque allí no existe .env. Desactivarlo aquí hace
+# que `make test` dé el mismo resultado en local y en CI.
+from csuite.config import Settings  # noqa: E402
+
+Settings.model_config["env_file"] = None
+
 
 @pytest.fixture(autouse=True)
 def reset_active_gateway():

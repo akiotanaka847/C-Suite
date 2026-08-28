@@ -301,6 +301,17 @@ class Settings(BaseSettings):
         "thread_unless_greeting", "auto", "always_thread", "always_inline"
     ] = Field("thread_unless_greeting", alias="DISCORD_MENTION_REPLY_MODE")
 
+    @field_validator("discord_notify_channel_id", mode="before")
+    @classmethod
+    def _empty_channel_id_is_none(cls, v: Any) -> Any:
+        # A var present but blank in .env arrives as "" and fails int parsing,
+        # which aborts startup. `DISCORD_NOTIFY_CHANNEL_ID=` is exactly how
+        # .env.example ships an optional setting, so treat blank as unset —
+        # the same shape `_parse_guild_ids` already gives DISCORD_GUILD_IDS.
+        if isinstance(v, str) and not v.strip():
+            return None
+        return v
+
     @field_validator("discord_guild_ids", mode="before")
     @classmethod
     def _parse_guild_ids(cls, v: Any) -> list[int]:
