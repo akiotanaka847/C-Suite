@@ -50,7 +50,7 @@ primary_region = "iad"
   processes = ["app"]
 
 [[http_service.checks]]
-  # extensible-mcp builds a tool-discovery vector index at startup. Its
+  # the MCP proxy builds a tool-discovery vector index at startup. Its
   # embedding model (sentence-transformers/all-MiniLM-L6-v2) is now baked into
   # the image (see docker/Dockerfile: HF_HOME + offline flags), so the boot no
   # longer fetches it from Hugging Face — but index build plus the main app's

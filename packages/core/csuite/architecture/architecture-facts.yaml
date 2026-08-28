@@ -2340,11 +2340,11 @@ integrations:
     (the API serves NO Google OAuth callback); `service_account` = domain-wide
     delegation via GOOGLE_SERVICE_ACCOUNT_KEY_JSON/_KEY_FILE + USER_GOOGLE_EMAIL,
     no browser callback. INVARIANT: the Google secrets must be added to
-    _FORWARDED_ENV_VARS so extensible-mcp can interpolate the $VAR placeholders in
+    _FORWARDED_ENV_VARS so the MCP proxy can interpolate the $VAR placeholders in
     the child's env block from its own environment. No separate Fly app / deploy
     token / deploy job. See docs/deployment.md.
 
-    Cold-start embedding cache: extensible-mcp runs as a uvx subprocess and
+    Cold-start embedding cache: the MCP proxy runs as a uvx subprocess and
     builds a tool-search vector index with fastembed, which loads
     Qdrant/all-MiniLM-L6-v2-onnx (fastembed remaps the name
     "sentence-transformers/all-MiniLM-L6-v2" to this ONNX repo). The MCP stdio

@@ -440,7 +440,7 @@ async def _mark_read(gateway: MCPGateway, message_id: str, user_email: str) -> N
 
 
 async def _discover_gmail_tools(gateway: MCPGateway) -> None:
-    """Discover Gmail MCP tools (extensible-mcp requires per-session discovery)."""
+    """Discover Gmail MCP tools (the MCP proxy requires per-session discovery)."""
     queries = [
         "search gmail messages unread inbox",
         "get gmail message content subject body sender",

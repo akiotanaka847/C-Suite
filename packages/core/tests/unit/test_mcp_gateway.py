@@ -1,4 +1,4 @@
-"""Unit tests for MCPGateway — mocked subprocess, no real extensible-mcp needed."""
+"""Unit tests for MCPGateway — mocked subprocess, no real the MCP proxy needed."""
 from __future__ import annotations
 
 import asyncio

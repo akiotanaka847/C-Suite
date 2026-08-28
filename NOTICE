@@ -24,6 +24,10 @@ REGISTRO DE CAMBIOS RESPECTO AL ORIGINAL
 - 2026-08-28: Workflows de despliegue (deploy.yml, deploy-qa.yml) cambiados a
   ejecución manual — el trigger en push queda comentado hasta que existan apps
   de Fly propias y sus secretos.
+- 2026-08-28: Renombrado íntegro del paquete: openexecutive → csuite.
+- 2026-08-28: Proxy MCP incorporado al repositorio como csuite/mcp_proxy y
+  lanzado en proceso local, eliminando la descarga por red de un repositorio
+  externo en cada arranque en frío.
 
 ---
 
@@ -54,3 +58,20 @@ Diferencias materiales respecto al texto canónico:
 Consecuencia práctica: los detectores automáticos de licencias (incluido
 GitHub) no lo reconocen como Apache-2.0 y lo marcan como "NOASSERTION". Para
 usos comerciales conviene consultar asesoría legal.
+
+
+---
+
+CÓDIGO DE TERCEROS INCORPORADO
+
+packages/core/csuite/mcp_proxy/
+    Derivado de extensible-mcp — "MCP proxy with on-demand server loading,
+    searchable tools, and pluggable filters for access control".
+    Copyright (c) 2026 Matthew Fuchs.
+    Distribuido bajo la Licencia Apache, Versión 2.0.
+    Copia de la licencia: packages/core/csuite/mcp_proxy/LICENSE
+
+    Modificaciones: empaquetado como el módulo csuite.mcp_proxy (imports
+    relativos en lugar de absolutos, integración en el monorepo, descripción
+    del CLI adaptada). Cada archivo modificado lleva el aviso correspondiente
+    en su cabecera, según exige la sección 4(b) de la licencia.

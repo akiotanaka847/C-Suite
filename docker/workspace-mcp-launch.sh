@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Launcher for the Google Workspace MCP server (workspace-mcp), run as a STDIO
-# child of the API's MCP gateway (extensible-mcp). The Executive consumes this
+# child of the API's MCP gateway. The Executive consumes this
 # server's Gmail/Calendar/Drive tools through that gateway.
 #
 # It is co-located in the API image (not a separate service): the gateway spawns
@@ -16,7 +16,7 @@
 #   service_account  Domain-wide delegation. A Workspace service account
 #                    impersonates USER_GOOGLE_EMAIL. No browser callback.
 #
-# These vars reach this script because the gateway forwards them to extensible-mcp
+# These vars reach this script because the gateway forwards them to the MCP proxy
 # (_FORWARDED_ENV_VARS in orchestrator/mcp_gateway.py) and the google_workspace
 # entry's `env` block passes them on to this child.
 set -eu

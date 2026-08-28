@@ -2,24 +2,14 @@ FROM python:3.11-slim AS api
 
 WORKDIR /app
 
-# git is required by the MCP gateway: it launches `extensible-mcp` via
-# `uvx --from git+...`, which clones the repo. Without git, MCP startup
-# fails with "Git executable not found" and uvicorn exits before the
-# health check passes.
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends git \
-    && rm -rf /var/lib/apt/lists/*
-
 RUN pip install uv
 
-# Pre-warm the extensible-mcp gateway so the API does not have to clone
-# from GitHub on every cold start. We use the EXACT invocation the
-# gateway uses at runtime (`uvx --from git+...`) — `uv tool install`
-# populates a different cache and does not help here. `|| true` keeps
-# the build green if GitHub is briefly unreachable; uvx will retry at
-# runtime.
-RUN uvx --from git+https://github.com/SenteLabsAI/extensible-mcp extensible-mcp --help \
-    || true
+# NOTA: antes esta imagen instalaba `git` y pre-calentaba el proxy MCP con
+# `uvx --from git+<repo>`, que clonaba un repositorio externo en cada build.
+# El proxy ahora vive en el repo (csuite/mcp_proxy) y se lanza con el mismo
+# intérprete que la API, así que el build ya no necesita git ni red hacia
+# GitHub. Si algún día añades un servidor MCP distribuido por git en
+# mcp_servers.json, vuelve a instalar git aquí.
 
 COPY packages/core/pyproject.toml packages/core/uv.lock* ./
 RUN uv pip install --system -r pyproject.toml 2>/dev/null || uv pip install --system .
@@ -27,8 +17,8 @@ RUN uv pip install --system -r pyproject.toml 2>/dev/null || uv pip install --sy
 # Bake the embedding model the MCP gateway loads at startup
 # (sentence-transformers/all-MiniLM-L6-v2). Without this the ~90 MB model is
 # fetched from Hugging Face on every cold start, which dominates boot time —
-# see the health-check grace period note in fly.api.toml. extensible-mcp is
-# launched via `uvx` and inherits this process's environment, so pointing
+# see the health-check grace period note in fly.api.toml. The MCP proxy is
+# launched as a subprocess and inherits this process's environment, so pointing
 # HF_HOME at an image path lets that subprocess load the model from disk
 # instead of the network. Runs right after the dependency install so the
 # layer is reused unless pyproject changes, and before the offline flags
@@ -36,21 +26,19 @@ RUN uv pip install --system -r pyproject.toml 2>/dev/null || uv pip install --sy
 ENV HF_HOME=/opt/hf-cache
 RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')"
 
-# Bake the model the MCP gateway ACTUALLY loads at startup. The gateway proxies
-# extensible-mcp (launched via uvx), whose tool-search index uses fastembed —
-# NOT sentence-transformers. fastembed silently remaps the name
-# "sentence-transformers/all-MiniLM-L6-v2" to the ONNX repo
-# Qdrant/all-MiniLM-L6-v2-onnx and downloads it on every cold start unless its
-# cache is already populated. fastembed lives only in the runtime uvx tool env
-# (not the system env), so install it here purely to warm the cache.
-# fastembed's define_cache_dir() reads FASTEMBED_CACHE_PATH; baking with the same
-# value orchestrator/mcp_gateway.py forwards to the subprocess at runtime lets it
-# load the model from disk (offline, see HF_HUB_OFFLINE below) instead of the
-# network. No `|| true`: if the bake can't fetch, fail the build rather than ship
-# an image that silently re-downloads — the model is deterministic.
+# Bake the model the MCP proxy ACTUALLY loads at startup. The proxy
+# (csuite/mcp_proxy) indexes tools with fastembed — NOT sentence-transformers.
+# fastembed silently remaps the name "sentence-transformers/all-MiniLM-L6-v2" to
+# the ONNX repo Qdrant/all-MiniLM-L6-v2-onnx and downloads it on every cold start
+# unless its cache is already populated. fastembed is now a declared dependency
+# in pyproject.toml (installed in the layer above), so this step only warms the
+# cache. fastembed's define_cache_dir() reads FASTEMBED_CACHE_PATH; baking with
+# the same value orchestrator/mcp_gateway.py forwards to the subprocess at runtime
+# lets it load the model from disk (offline, see HF_HUB_OFFLINE below) instead of
+# the network. No `|| true`: if the bake can't fetch, fail the build rather than
+# ship an image that silently re-downloads — the model is deterministic.
 ENV FASTEMBED_CACHE_PATH=/opt/fastembed-cache
-RUN uv pip install --system "fastembed>=0.6.0" \
-    && python -c "from fastembed import TextEmbedding; TextEmbedding('sentence-transformers/all-MiniLM-L6-v2')"
+RUN python -c "from fastembed import TextEmbedding; TextEmbedding('sentence-transformers/all-MiniLM-L6-v2')"
 
 # Google Workspace MCP server, run co-located as a stdio child of the MCP gateway
 # (see docker/workspace-mcp-launch.sh + packages/core/mcp_servers.json.example).
@@ -92,7 +80,7 @@ ENV COMPANY_PROFILE_PATH=/data/company/profile.yaml
 # under $HF_HOME, fastembed under $FASTEMBED_CACHE_PATH), so force offline mode at
 # runtime: this skips the per-boot HEAD/etag round-trip to the Hub and makes cold
 # starts independent of network to Hugging Face. HF_HUB_OFFLINE is what fastembed
-# (via huggingface_hub) honors and is forwarded into the extensible-mcp subprocess
+# (via huggingface_hub) honors and is forwarded into the MCP proxy subprocess
 # by orchestrator/mcp_gateway.py. If a baked cache were ever missing the model,
 # startup fails fast rather than silently re-downloading — acceptable since the
 # models are baked deterministically.

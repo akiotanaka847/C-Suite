@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import re
+import sys
 from collections.abc import Iterator
 from email.utils import getaddresses
 from pathlib import Path
@@ -14,15 +15,19 @@ from csuite.config import get_settings
 
 logger = logging.getLogger(__name__)
 
-_UVX_CMD = "uvx"
-_EXTENSIBLE_MCP_GIT = "git+https://github.com/SenteLabsAI/extensible-mcp"
-_EXTENSIBLE_MCP_CMD = "extensible-mcp"
+# El proxy MCP vive dentro de este repo (csuite/mcp_proxy). Se lanza con el
+# MISMO intérprete que corre la API — sys.executable — en lugar de resolverlo
+# por red con `uvx --from git+...`. Consecuencias: el arranque no depende de
+# GitHub ni de que uvx esté instalado, no hay descarga en frío, y la versión
+# del proxy queda fijada por el commit del repo en vez de flotar con una rama
+# remota.
+_PROXY_MODULE = "csuite.mcp_proxy"
 
-# Env vars forwarded into the extensible-mcp subprocess. The MCP stdio client
+# Env vars forwarded into the MCP proxy subprocess. The MCP stdio client
 # (mcp.client.stdio) does NOT pass our environment through: when
 # StdioServerParameters.env is None it gives the child only a fixed safe
 # allowlist (HOME, PATH, …) and drops everything else. That silently stripped
-# the embedding-cache/offline config, so extensible-mcp's fastembed tool-search
+# the embedding-cache/offline config, so the MCP proxy's fastembed tool-search
 # model (Qdrant/all-MiniLM-L6-v2-onnx, which fastembed resolves from
 # "sentence-transformers/all-MiniLM-L6-v2") was re-fetched from the Hugging Face
 # Hub on every cold start. Forwarding these — set in the API image, see
@@ -31,9 +36,9 @@ _EXTENSIBLE_MCP_CMD = "extensible-mcp"
 # when they are unset (env stays None → SDK default).
 #
 # The Google* / WORKSPACE_MCP_* / GWORKSPACE_AUTH_MODE vars are forwarded for the
-# co-located google_workspace stdio child: extensible-mcp interpolates the
+# co-located google_workspace stdio child: the MCP proxy interpolates the
 # `$VAR` placeholders in that server's `env` block (mcp_servers.json) from its
-# OWN environment, so the API's Google secrets must reach extensible-mcp here
+# OWN environment, so the API's Google secrets must reach the MCP proxy here
 # first. They carry the workspace-mcp credentials/auth-mode and the credentials
 # dir on the /data volume. Absent → not forwarded, so non-Google installs and CI
 # are unaffected.
@@ -581,7 +586,7 @@ def _record_email_outbound_context(arguments: dict[str, Any]) -> None:
 
 
 class MCPGateway:
-    """Proxies search_tools / call_tool / load_mcp_server to an extensible-mcp subprocess.
+    """Proxies search_tools / call_tool / load_mcp_server to an the MCP proxy subprocess.
 
     Lifecycle: call start() at app startup, close() at shutdown.
     The subprocess persists for the lifetime of the server process.
@@ -601,8 +606,8 @@ class MCPGateway:
 
         forwarded_env = {k: os.environ[k] for k in _FORWARDED_ENV_VARS if k in os.environ}
         params = StdioServerParameters(
-            command=_UVX_CMD,
-            args=["--from", _EXTENSIBLE_MCP_GIT, _EXTENSIBLE_MCP_CMD, "--config", str(config_path)],
+            command=sys.executable,
+            args=["-m", _PROXY_MODULE, "--config", str(config_path)],
             env=forwarded_env or None,
         )
         self._stdio_cm = stdio_client(params)
