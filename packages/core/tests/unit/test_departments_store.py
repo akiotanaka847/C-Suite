@@ -467,7 +467,7 @@ def test_delete_custom_department(db: Path) -> None:
 
 # --------------------------------------------------------------------------- #
 # record_goal_review — Phase A: status review advances last_reviewed_at but
-# NOT updated_at, distinguishing OE's grading from content edits.
+# NOT updated_at, distinguishing C-Suite's grading from content edits.
 # --------------------------------------------------------------------------- #
 
 def test_record_goal_review_advances_last_reviewed_at_without_bumping_updated_at(

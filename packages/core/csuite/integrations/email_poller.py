@@ -337,7 +337,7 @@ async def _run_executive(
         ):
             session.seen_channel_refs.add(("email", f"{from_addr}|{thread_id}"))
             session.seen_channel_refs.add(("email", from_addr))
-    # Look up the OE Person record (case-insensitive by email) so Honcho
+    # Look up the C-Suite Person record (case-insensitive by email) so Honcho
     # can key per-person memory off Person.id (shared across channels).
     # No match → person_id stays None and the Honcho layer no-ops.
     from csuite.people.store import find_person_by_email
@@ -349,7 +349,7 @@ async def _run_executive(
 
     # Multi-peer co-presence: parse To+Cc headers and resolve each
     # recipient to a Person via find_person_by_email. Skip the From
-    # (already covered by person_id) and the OE exec's own address
+    # (already covered by person_id) and the C-Suite exec's own address
     # (we ARE the executive — never a peer). Best-effort: parse
     # failures degrade to an empty list rather than blocking the turn.
     co_present_person_ids: list[int] = []

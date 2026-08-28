@@ -1,14 +1,14 @@
 # Self-hosted Honcho on Fly
 
-OE's per-person memory layer ([honcho.dev](https://honcho.dev)) runs as a
-private Fly app. The OE API talks to it over Fly's internal network; it
+C-Suite's per-person memory layer ([honcho.dev](https://honcho.dev)) runs as a
+private Fly app. The C-Suite API talks to it over Fly's internal network; it
 has no public IP. This runbook covers first-time provisioning, day-2
 operations, and version bumps.
 
-OE-side wiring lives in
+C-Suite-side wiring lives in
 [`packages/core/csuite/memory/honcho_client.py`](../packages/core/csuite/memory/honcho_client.py)
 and is gated by `HONCHO_ENABLED`. Until that flag flips to `true` in
-`csuite-api-dev`'s secrets, OE behaves identically to before.
+`csuite-api-dev`'s secrets, C-Suite behaves identically to before.
 
 ## Architecture
 
@@ -28,8 +28,8 @@ csuite-honcho-dev (Fly app, this runbook)
 
 All LLM calls (deriver, summary, dialectic levels, dream deduction) go
 out via OpenRouter using Honcho's `openai` transport with a custom
-`base_url`. Single outbound credential (`LLM_OPENAI_API_KEY` = OE's
-existing OpenRouter key). Models are OpenRouter slugs in OE's existing
+`base_url`. Single outbound credential (`LLM_OPENAI_API_KEY` = C-Suite's
+existing OpenRouter key). Models are OpenRouter slugs in C-Suite's existing
 convention (dotted, matching `packages/core/csuite/providers/
 registry.py`): `anthropic/claude-haiku-4.5` for cheap-tier work
 (deriver / summary / dialectic minimal+low) and
@@ -89,7 +89,7 @@ here so nobody has to figure it out twice.)
 
 ### 3. Set the remaining secrets
 
-OpenRouter is the only outbound LLM vendor — same account OE already
+OpenRouter is the only outbound LLM vendor — same account C-Suite already
 uses. Embeddings come from the local `embed` process group (no key
 needed for the sidecar itself, but Honcho's OpenAI client requires
 *some* API key string, so we pass a placeholder).
@@ -159,7 +159,7 @@ flyctl status -a csuite-honcho-dev
 # Expect three machines: one running `api`, one `deriver`, one `embed`.
 ```
 
-### 5. Generate an API key + wire OE
+### 5. Generate an API key + wire C-Suite
 
 Honcho v3.0.7 does not ship a token-minting CLI command. Use the
 `create_admin_jwt()` Python helper from inside the running api container
@@ -188,7 +188,7 @@ the admin JWT and a body limiting scope to the `csuite` workspace
 `AUTH_JWT_SECRET` immediately (see "Rotate the JWT secret" below) —
 that invalidates every issued token in one shot.
 
-Set OE-side secrets:
+Set C-Suite-side secrets:
 
 ```bash
 flyctl secrets set -a csuite-api-dev \
@@ -198,7 +198,7 @@ flyctl secrets set -a csuite-api-dev \
     HONCHO_WORKSPACE_ID=csuite
 ```
 
-OE's wrapper picks up the new env on the next deploy or restart.
+C-Suite's wrapper picks up the new env on the next deploy or restart.
 
 ### 6. Smoke
 
@@ -330,8 +330,8 @@ flyctl secrets set -a csuite-honcho-dev AUTH_JWT_SECRET="$NEW_SECRET"
 flyctl secrets set -a csuite-api-dev HONCHO_API_KEY=hch-new-...
 ```
 
-Rotation invalidates all previously-issued tokens. OE's wrapper will
-401 until both secrets are updated and the OE app restarts — schedule
+Rotation invalidates all previously-issued tokens. C-Suite's wrapper will
+401 until both secrets are updated and the C-Suite app restarts — schedule
 the rotation accordingly.
 
 ### Bump Honcho version
@@ -354,7 +354,7 @@ flyctl deploy -c fly.honcho.toml
 # AND `alembic downgrade` if needed.
 ```
 
-Don't bump Honcho versions in the same PR as OE-side changes — keep
+Don't bump Honcho versions in the same PR as C-Suite-side changes — keep
 the upgrade isolated so a rollback is single-purpose.
 
 ### GitHub Actions deploy
@@ -393,13 +393,13 @@ cycle the deriver mid-thought. Bump Honcho explicitly.
 ### Kill switch
 
 If Honcho is misbehaving (returning bad context, costing too much,
-whatever), flip the OE-side flag without touching the Honcho app:
+whatever), flip the C-Suite-side flag without touching the Honcho app:
 
 ```bash
 flyctl secrets set -a csuite-api-dev HONCHO_ENABLED=false
 ```
 
-OE's wrapper no-ops immediately on the next turn. The Honcho app keeps
+C-Suite's wrapper no-ops immediately on the next turn. The Honcho app keeps
 running but receives no traffic — fine for debugging without
 double-rollout pressure.
 
@@ -418,7 +418,7 @@ different names:
   `google/gemini-2.5-flash` is meaningfully cheaper per token at
   comparable quality). Per-call routing through OpenRouter means
   swapping is a config-line change — no second vendor relationship.
-- Add the prod app to OE's deploy automation (CI workflow + Makefile
+- Add the prod app to C-Suite's deploy automation (CI workflow + Makefile
   target).
 
 A clean separation here matters: dev and prod must not share a Honcho

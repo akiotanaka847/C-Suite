@@ -25,7 +25,7 @@ surfaces the orchestrator calls per turn:
 
 Both prefetch and sync_turn are no-ops when ``Settings.honcho_enabled``
 is false or ``person_id`` is ``None`` (anonymous channel user with no
-Person row). All Honcho calls are wrapped so failures degrade OE to its
+Person row). All Honcho calls are wrapped so failures degrade C-Suite to its
 pre-Honcho behaviour rather than break a turn. Every call writes one
 ``peer_memory`` audit row so the per-turn flow chart can render the
 Honcho path alongside ``<retrieved_context>`` and ``<past_decisions>``.
@@ -47,7 +47,7 @@ from csuite.config import get_settings
 
 logger = logging.getLogger(__name__)
 
-# Stable peer id for OE's Executive in Honcho's peer model. Using a single
+# Stable peer id for C-Suite's Executive in Honcho's peer model. Using a single
 # fixed id (rather than per-deployment) keeps the assistant's representation
 # consistent if a workspace is shared across environments.
 _EXECUTIVE_PEER_ID = "executive"

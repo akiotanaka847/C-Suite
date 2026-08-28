@@ -1,5 +1,29 @@
 import NextAuth from "next-auth";
+import type { Provider } from "next-auth/providers";
+import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
+
+/**
+ * Local-development sign-in, disabled unless BOTH guards pass.
+ *
+ * This bypasses AUTHENTICATION (proving you are who you claim) so a developer
+ * can open the app without provisioning a Google OAuth client. It does NOT
+ * bypass AUTHORIZATION — the signed-in email still goes through the exact
+ * roster/allow-list check every Google sign-in goes through, so an address
+ * that is not on the roster is refused here too.
+ *
+ * Both guards must hold:
+ *   1. NODE_ENV === "development" — `next build` sets "production", so this
+ *      provider cannot exist in a deployed image (Fly, Docker, Vercel).
+ *   2. DEV_AUTH_BYPASS === "true" — an explicit opt-in, so a dev server
+ *      started without it behaves exactly like production.
+ *
+ * Remove DEV_AUTH_BYPASS from .env.local once real OAuth credentials are set.
+ */
+const DEV_BYPASS_ENABLED =
+  process.env.NODE_ENV === "development" && process.env.DEV_AUTH_BYPASS === "true";
+
+const DEV_BYPASS_EMAIL = (process.env.DEV_AUTH_BYPASS_EMAIL ?? "").trim().toLowerCase();
 
 // Env-var fallback for the bootstrap case (fresh install, roster still
 // empty). Once any Person row exists with an email, the backend's
@@ -93,8 +117,39 @@ function auditAuth(
   });
 }
 
+// Typed as Provider[] rather than letting TS infer `typeof Google[]` from the
+// initialiser — otherwise the Credentials provider below is not assignable.
+const providers: Provider[] = [Google];
+
+if (DEV_BYPASS_ENABLED && DEV_BYPASS_EMAIL) {
+  providers.push(
+    Credentials({
+      id: "dev-bypass",
+      name: "Local development",
+      credentials: {},
+      // No secret to check: the guards above ARE the check. The returned
+      // email is then subjected to the normal allow-list in `signIn`.
+      authorize: async () => ({
+        id: `dev-bypass:${DEV_BYPASS_EMAIL}`,
+        email: DEV_BYPASS_EMAIL,
+        // Derived from the address so the UI greets you as the person you
+        // signed in as, not as "Local development".
+        name: DEV_BYPASS_EMAIL.split("@")[0]
+          .split(/[._-]+/)
+          .filter(Boolean)
+          .map((part) => part[0].toUpperCase() + part.slice(1))
+          .join(" "),
+      }),
+    }),
+  );
+  console.warn(
+    `[auth] DEV BYPASS ACTIVE — signing in as ${DEV_BYPASS_EMAIL} without Google. ` +
+      "Development only; unset DEV_AUTH_BYPASS to disable.",
+  );
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  providers: [Google],
+  providers,
   // 24h JWT TTL. Defence in depth alongside the `authorized` re-check
   // below — a session that somehow drifts out of sync with the roster
   // is corrected on next access, but also naturally expires within a
@@ -108,7 +163,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     // Strict initial gate. Requires `email_verified === true` explicitly: a
     // missing / non-boolean value fails closed. Google always returns true
     // for real accounts.
-    signIn: async ({ profile }) => {
+    signIn: async ({ profile, account, user }) => {
+      // Dev-bypass path: there is no OAuth `profile`, so the Google-specific
+      // `email_verified` gate does not apply. The allow-list check below is
+      // still enforced — this only skips proving identity, not permission.
+      if (DEV_BYPASS_ENABLED && account?.provider === "dev-bypass") {
+        const devEmail = user?.email?.toLowerCase();
+        if (!devEmail) return false;
+        const { allowed, source } = await checkEmailAllowed(devEmail);
+        auditAuth(
+          "auth_login",
+          `Dev-bypass login ${allowed ? "allowed" : "denied"}: ${devEmail}`,
+          devEmail,
+          { dev_bypass: true, denied: !allowed, source },
+        );
+        return allowed;
+      }
+
       const email = profile?.email?.toLowerCase();
       if (!email) {
         auditAuth("auth_login", "Login denied: no email", null, { denied: true, reason: "no_email" });

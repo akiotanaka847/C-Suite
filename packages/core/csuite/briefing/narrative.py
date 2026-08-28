@@ -177,7 +177,7 @@ def render_briefing_context(
         parts.append("")
 
     if activity:
-        parts.append("OE ACTIVITY SINCE LAST BRIEF (most recent first):")
+        parts.append("C-Suite ACTIVITY SINCE LAST BRIEF (most recent first):")
         for item in activity[:15]:
             parts.append(
                 f"- [{item.get('at', '')[:10]}] {item.get('kind', 'action')}: "

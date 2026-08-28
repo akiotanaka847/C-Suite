@@ -155,7 +155,7 @@ def _enrich_matches(matches: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 # ---------------------------------------------------------------------------
 # Resources — company-grounded context. Read-only, no LLM calls. The unique
-# thing OE has that a generic agent does not.
+# thing C-Suite has that a generic agent does not.
 # ---------------------------------------------------------------------------
 @mcp.resource(
     "oe://company/profile",
@@ -343,7 +343,7 @@ async def ask_executive(message: str, caller_email: str = "") -> str:
     """Ask the Executive a question and get one synthesized answer (fallback tool).
 
     Prefer ``consult_specialist`` and the company resources — this duplicates
-    OE's existing chat channels and is non-streaming. Use it only when you want
+    C-Suite's existing chat channels and is non-streaming. Use it only when you want
     a single coherent, cross-domain answer.
 
     Args:

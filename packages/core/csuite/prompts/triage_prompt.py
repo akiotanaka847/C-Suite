@@ -53,7 +53,7 @@ If any element of `<muted_topics>` is a substring of any topic tag you would emi
 
 ## External Signals
 
-Events with `source` ∈ `{"vendor_status", "rss", "stock", "query", "edgar", "page_watch"}` come from the external monitoring layer rather than a person — the user explicitly asked OE to watch them. These events arrive with two extra labeled lines in the body:
+Events with `source` ∈ `{"vendor_status", "rss", "stock", "query", "edgar", "page_watch"}` come from the external monitoring layer rather than a person — the user explicitly asked C-Suite to watch them. These events arrive with two extra labeled lines in the body:
 
 ```
 Watchlist: <slug>         # the user-named entry that captured this signal

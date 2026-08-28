@@ -253,7 +253,7 @@ async def _process_and_reply(
             retrieved_context = retrieve(query=message_text)
             episodic_context = format_for_prompt(session_id=session_id)
 
-            # Look up the OE Person record so Honcho can key per-person
+            # Look up the C-Suite Person record so Honcho can key per-person
             # memory off Person.id (shared across channels). No match →
             # person_id stays None and the Honcho layer no-ops.
             from csuite.people.store import find_person_by_telegram_chat_id

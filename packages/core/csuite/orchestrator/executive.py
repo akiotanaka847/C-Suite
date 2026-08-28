@@ -439,7 +439,7 @@ class Executive:
             user_content_parts.append(
                 {"type": "text", "text": f"<peer_memory>\n{peer_memory_context}\n</peer_memory>"}
             )
-        # What the user is looking at right now (Ask OE panel turns only):
+        # What the user is looking at right now (Ask C-Suite panel turns only):
         # route, page title, guide excerpt, and — when a form is on screen —
         # its field descriptor. Per-request by nature, so it lives in the
         # user turn alongside the other dynamic context, never a cached
@@ -1384,7 +1384,7 @@ class Executive:
                     )
                     if chip is not None:
                         yield chip
-                    # Form proposals reach the Ask OE panel as a dedicated
+                    # Form proposals reach the Ask C-Suite panel as a dedicated
                     # SSE event (not an action chip — nothing was mutated).
                     # Only deliver what the handler accepted; a shape error
                     # already went back to the model as the tool_result.

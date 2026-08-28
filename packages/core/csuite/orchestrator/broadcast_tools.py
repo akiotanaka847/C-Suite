@@ -18,7 +18,7 @@ These broadcast tools differ from `send_slack_dm` / `send_discord_dm` /
    consented to being messaged.
 
 2. They are the structural expression of the "Choosing Who to Tell"
-   judgment codified in `executive_persona.py` — OE picks among DM /
+   judgment codified in `executive_persona.py` — C-Suite picks among DM /
    dept channel / company broadcast by *which tool it calls*, with
    the persona's section telling it when each is appropriate.
 """

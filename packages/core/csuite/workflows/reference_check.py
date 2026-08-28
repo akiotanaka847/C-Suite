@@ -2,7 +2,7 @@
 
 Drafts a reference-check rubric (questions + what a concerning answer looks like)
 plus a reference-facing outreach message, then schedules a single reminder to the
-principal to conduct the checks. Draft-and-approve: OE never contacts references
+principal to conduct the checks. Draft-and-approve: C-Suite never contacts references
 directly — the reminder hands the principal the rubric and the ready-to-send
 outreach.
 
@@ -195,8 +195,8 @@ def _assemble_artifact(
         ctx,
         title="Reference Check",
         disclaimer=(
-            "Drafts only — OE schedules a reminder to you to run the references; you "
-            "contact them yourself. OE never contacts references directly."
+            "Drafts only — C-Suite schedules a reminder to you to run the references; you "
+            "contact them yourself. C-Suite never contacts references directly."
         ),
         meta_lines=[f"**References planned:** {reference_count}  "],
     )

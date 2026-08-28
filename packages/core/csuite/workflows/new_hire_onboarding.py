@@ -329,7 +329,7 @@ def _assemble_artifact(
         ctx,
         title="Onboarding Plan",
         disclaimer=(
-            "Check-in reminders go to you — OE never contacts the new hire "
+            "Check-in reminders go to you — C-Suite never contacts the new hire "
             "directly. You run each milestone conversation yourself."
         ),
         meta_lines=[

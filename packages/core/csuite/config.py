@@ -232,7 +232,7 @@ class Settings(BaseSettings):
 
     slack_bot_token: str | None = Field(None, alias="SLACK_BOT_TOKEN")
     slack_app_token: str | None = Field(None, alias="SLACK_APP_TOKEN")
-    # Company-wide broadcast channels — when set, OE can post to "the
+    # Company-wide broadcast channels — when set, C-Suite can post to "the
     # whole team" on a given integration without picking a specific
     # human or department. Used by `send_company_broadcast`. Each is
     # independently optional: a deployment can wire up just Slack

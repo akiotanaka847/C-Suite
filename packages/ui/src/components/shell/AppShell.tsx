@@ -125,7 +125,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <MobileBottomNav pathname={pathname} onOpenDrawer={() => setDrawerOpen(true)} />
         </div>
 
-        {/* Ask OE — page-aware assistant panel, docked right on lg+,
+        {/* Ask C-Suite — page-aware assistant panel, docked right on lg+,
             right sheet below. Renders nothing while closed. */}
         <AskOEPanel />
       </div>
@@ -371,7 +371,7 @@ function AskOEButton() {
     <button
       type="button"
       onClick={toggle}
-      title="Ask OE about this page (Ctrl/Cmd + .)"
+      title="Ask C-Suite about this page (Ctrl/Cmd + .)"
       aria-pressed={open}
       className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
         open
@@ -380,7 +380,7 @@ function AskOEButton() {
       }`}
     >
       <Icon name="bolt" size="w-4 h-4" />
-      <span className="hidden sm:inline">Ask OE</span>
+      <span className="hidden sm:inline">Ask C-Suite</span>
     </button>
   );
 }

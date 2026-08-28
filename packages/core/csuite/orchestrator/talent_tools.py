@@ -339,7 +339,7 @@ EXTEND_OFFER_TOOL: dict[str, Any] = {
     "name": "extend_offer",
     "description": (
         "Mark an offer as extended — the principal sent it to the candidate "
-        "themselves (OE NEVER sends offers to candidates) — and schedule expiry "
+        "themselves (C-Suite NEVER sends offers to candidates) — and schedule expiry "
         "reminders to the principal. Checks the recorded hiring sign-off: a "
         "rejection blocks this; a pending/absent sign-off proceeds on the "
         "principal's explicit instruction and is flagged in the response. "
@@ -621,7 +621,7 @@ async def handle_set_candidate_stage(tool_input: dict[str, Any]) -> str:
         "changed": changed,
     }
     # Suggest-on-placed: a placed candidate is a hire — prompt the Executive to
-    # chain the hire-loop steps. A suggestion only, never an auto-fire, and OE
+    # chain the hire-loop steps. A suggestion only, never an auto-fire, and C-Suite
     # still never messages the candidate directly. The two onboarding surfaces
     # compose: new_hire_onboarding records the offer outcome's roster Person
     # (which staff-onboarding delivery/ramp needs) + principal 30/60/90
@@ -1011,7 +1011,7 @@ async def handle_create_offer(tool_input: dict[str, Any]) -> str:
         "offer": _offer_summary(offer),
         "presentation_hint": (
             "Draft recorded. When the principal actually sends the offer, call "
-            "extend_offer to start expiry reminders. OE never sends offers to "
+            "extend_offer to start expiry reminders. C-Suite never sends offers to "
             "candidates."
         ),
     })

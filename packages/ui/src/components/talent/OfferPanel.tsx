@@ -31,7 +31,7 @@ function expiryCountdown(offer: Offer): { text: string; urgent: boolean } | null
  * Shows the candidate's current (or most recent) offer: status, terms, the
  * persisted package from the offer_approval workflow, and the lifecycle
  * actions — draft (workflow), mark extended, record the decision, start
- * onboarding. OE never sends the offer to the candidate; the actions here
+ * onboarding. C-Suite never sends the offer to the candidate; the actions here
  * record what the principal did. */
 export function OfferPanel({
   candidate,

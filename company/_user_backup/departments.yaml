@@ -1,0 +1,94 @@
+departments:
+- slug: board_comms
+  title: Board & Investor Comms
+  specialist_key: board_comms
+  authority_level: propose_only
+  charter:
+    mission: Prepare board decks, investor updates, and governance communications.
+    scope: []
+    out_of_scope: []
+  cadences:
+    check_in: daily@09:00
+- slug: finance
+  title: Finance
+  specialist_key: cfo
+  authority_level: propose_only
+  charter:
+    mission: Own the company's capital position, unit economics, financial planning,
+      and investor reporting.
+    scope:
+    - monthly close
+    - FP&A modelling
+    - fundraising preparation
+    - vendor contracts >$10K
+    - board financials
+    out_of_scope:
+    - pricing strategy (Product)
+    - payroll mechanics (HR Ops)
+    - procurement <$10K (Operations)
+  cadences:
+    check_in: daily@09:00
+- slug: hr
+  title: People & Talent
+  specialist_key: chro
+  authority_level: propose_only
+  charter:
+    mission: 'Run the people function: hiring, compensation, performance, culture,
+      and org design.'
+    scope: []
+    out_of_scope: []
+  cadences:
+    check_in: daily@09:00
+- slug: legal
+  title: Legal
+  specialist_key: gc
+  authority_level: propose_only
+  charter:
+    mission: 'Manage legal exposure: contracts, IP, employment basics, and compliance
+      (with appropriate disclaimers).'
+    scope: []
+    out_of_scope: []
+  cadences:
+    check_in: daily@09:00
+- slug: marketing
+  title: Marketing
+  specialist_key: cmo
+  authority_level: propose_only
+  charter:
+    mission: Own GTM strategy, brand, messaging, PR, and crisis communications.
+    scope: []
+    out_of_scope: []
+  cadences:
+    check_in: daily@09:00
+- slug: operations
+  title: Operations
+  specialist_key: coo
+  authority_level: propose_only
+  charter:
+    mission: 'Run the operating layer: process design, vendor management, operational
+      scaling, and metrics.'
+    scope: []
+    out_of_scope: []
+  cadences:
+    check_in: daily@09:00
+- slug: product
+  title: Product
+  specialist_key: cpo
+  authority_level: propose_only
+  charter:
+    mission: Own the product roadmap, prioritization frameworks, and product strategy.
+    scope: []
+    out_of_scope: []
+  cadences:
+    check_in: daily@09:00
+- slug: strategy
+  title: Strategy
+  specialist_key: cso
+  authority_level: propose_only
+  charter:
+    mission: 'Set company direction: competitive positioning, market entry, scenario
+      planning, and long-range OKRs.'
+    scope: []
+    out_of_scope: []
+  cadences:
+    check_in: daily@09:00

@@ -1,4 +1,4 @@
-"""The /chat route must render the Ask OE panel's page_context into a
+"""The /chat route must render the Ask C-Suite panel's page_context into a
 user-turn block and pass it to the Executive — and stay byte-identical to
 the old behavior when no page_context is sent.
 

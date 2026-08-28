@@ -16,7 +16,7 @@ explicit follow-up action (the ``extend_offer`` tool / ``POST
 yielded *before* the gate, and the package Markdown is persisted onto the
 Offer row, so nothing is lost when the run pauses.
 
-Posture: OE never sends the offer to the candidate. The approver gets the
+Posture: C-Suite never sends the offer to the candidate. The approver gets the
 sign-off request; the principal extends the offer themselves after sign-off.
 """
 from __future__ import annotations
@@ -93,7 +93,7 @@ class OfferApprovalWorkflow(Workflow):
         "comp band, plus a closing plan), sends the hiring sign-off request to "
         "the HIRING_SIGNOFF approver, and pauses until they reply. After "
         "approval, mark the offer extended (extend_offer) when you send it — "
-        "OE never sends the offer to the candidate."
+        "C-Suite never sends the offer to the candidate."
     )
     section = WorkflowSection.PEOPLE
     estimated_minutes = 4
@@ -372,7 +372,7 @@ def _assemble_artifact(
         ctx,
         title="Offer Package",
         disclaimer=(
-            "Draft for sign-off — OE never sends the offer to the candidate. "
+            "Draft for sign-off — C-Suite never sends the offer to the candidate. "
             f"After {approver_name} approves, you extend the offer yourself and "
             "mark it extended so expiry reminders start."
         ),

@@ -397,7 +397,7 @@ routing:
     handlers, so they are unaffected (see the `scheduler:` kinds note).
   reflection_then_decide: |
     Shift 5 introduces a new routing pattern: ``executive_reflection``
-    is the first workflow that lets OE consume structured signal data
+    is the first workflow that lets C-Suite consume structured signal data
     (the /today + /today/activity + open-alerts triple) and decide what
     to ACT on, not just what to summarise. The reflection workflow
     invokes a single LLM call against the routing_model with the
@@ -423,7 +423,7 @@ routing:
     Audit trail: every tool the reflection model invokes flows through
     the existing handler audit rows (`tool_invocation` with actor=
     "executive"); the workflow run_id ties them together so a human
-    inspecting the audit log can see "OE's 07:30 reflection on this
+    inspecting the audit log can see "C-Suite's 07:30 reflection on this
     date fired N DMs and queued M follow-ups." Tool failures don't
     abort the loop — the model sees the failure summary and can
     choose to retry, route differently, or surface the failure in the
@@ -431,7 +431,7 @@ routing:
 
   outbound_privacy_invariant: |
     For decisions touching `authority_scope` of `board`, `comp`, or
-    `legal`, OE must DM the scope-holder rather than posting to a
+    `legal`, C-Suite must DM the scope-holder rather than posting to a
     department channel or company broadcast — even when the matter
     would otherwise qualify as department-scoped or company-wide.
     The blast radius of a broadcast is the whole team; the privacy
@@ -569,7 +569,7 @@ peer_memory:
     module: csuite.memory.honcho_client
     gate: |
       ``HONCHO_ENABLED`` env var. When false, every entry point
-      short-circuits with ``outcome=disabled`` and the rest of OE
+      short-circuits with ``outcome=disabled`` and the rest of C-Suite
       behaves identically to its pre-Honcho posture. Per-loop client
       cache keyed by ``asyncio.AbstractEventLoop`` so Slack's per-turn
       ``asyncio.run`` doesn't bind a stale client.
@@ -744,7 +744,7 @@ peer_memory:
       ``details.person_id``.
   dreaming: |
     The provider's server-side deriver + dream passes asynchronously
-    enrich peer representations from accumulated messages. OE does not
+    enrich peer representations from accumulated messages. C-Suite does not
     call ``schedule_dream``, ``refresh``, ``queue_status``, or
     ``search`` — dreaming policy is whatever the hosted service does
     on its own. Implication: a fact written via ``sync_turn`` /
@@ -845,7 +845,7 @@ departments:
     the Executive can post to the department's team room via
     `send_department_message` instead of (or in addition to) DMing
     the head. Nullable — a department with no channel configured has
-    no broadcast surface and OE falls back per the "Choosing Who to
+    no broadcast surface and C-Suite falls back per the "Choosing Who to
     Tell" rule (DM the head). Configure on /departments/{slug}.
     Migration in `_migrate_add_channel_columns` adds the columns
     additively on every boot (PRAGMA-guarded duplicate-column tolerance
@@ -863,7 +863,7 @@ departments:
     `store.record_goal_review(goal_id, status=…, last_reviewed_at=now)`,
     a thin wrapper that updates ONLY those two columns and does NOT
     bump `updated_at`. The split lets the UI render an honest "Last
-    reviewed Nd ago" — a human content edit on Tuesday and an OE
+    reviewed Nd ago" — a human content edit on Tuesday and an C-Suite
     review on Wednesday remain distinguishable. A new `last_reviewed_at
     TEXT` column on `department_goals` is added by
     `_migrate_add_last_reviewed_at_column` (additive ALTER, mirrors the
@@ -1048,11 +1048,11 @@ chat:
     - "committee_critique — severity preview from a committee reviewer. Fields: type, reviewer, severity."
     - "action_taken — emitted whenever the Executive's tool-use loop completes a side-effecting tool call. Fields: type, tool, summary (≤80 chars, human-readable), target (person / channel ref / resource), link (optional in-app path the UI drills into), iteration. See `csuite.orchestrator.action_chips.SIDE_EFFECTING_TOOLS` for the canonical instrumented set; read-only tools (consult_specialist, lookup_person, list_people, search_skills, load_skill, search_tools, web_search, ask_about_person, list_workflows) never emit this event. The chip is suppressed when the handler returned an error payload — no green ✓ over a red outcome."
     - "debug_event — internal observability for the Agent Activity panel (knowledge_retrieved, routing_decision, specialist_start/done, synthesis_start, skill_invocation, mcp_invocation, web_search_invocation, committee_*). Not part of the user-visible conversation."
-    - "form_patch — emitted when the Executive calls `propose_form_values` (Ask OE panel form-fill tier). Fields: type, form_id, fields (name → proposed value map), rationale, iteration. The panel applies the values into the registered on-screen form as highlighted suggestions; nothing is saved server-side and the user submits through the form's normal Save. NOT persisted with the assistant message (same deferred-persistence bucket as the action-chip note below predating chip persistence) — reopening a panel session loses the proposal cards, though values already applied to a form are unaffected."
+    - "form_patch — emitted when the Executive calls `propose_form_values` (Ask C-Suite panel form-fill tier). Fields: type, form_id, fields (name → proposed value map), rationale, iteration. The panel applies the values into the registered on-screen form as highlighted suggestions; nothing is saved server-side and the user submits through the form's normal Save. NOT persisted with the assistant message (same deferred-persistence bucket as the action-chip note below predating chip persistence) — reopening a panel session loses the proposal cards, though values already applied to a form are unaffected."
     - "done — final marker carrying the resolved session_id; UI uses this to commit the streamed assistant message and clear the pending-prompt state."
     - "error — terminal error before/after streaming. Always followed by `done` so the stream consumer's state-machine reaches a clean end."
   ask_oe_page_context: |
-    The Ask OE side panel (packages/ui/src/components/askoe/*, available on
+    The Ask C-Suite side panel (packages/ui/src/components/askoe/*, available on
     every AppShell route — not `/`, which IS the chat) sends an optional
     `page_context` field on ChatRequest: route, page title, the matching
     /guide section id, and — when the page registered a form — a
@@ -1700,14 +1700,14 @@ workflows:
     - inbound_resolver — matches human replies back to paused workflow runs.
     - crisis_comms — drafts incident response messaging.
     - churn_deep_dive — structured customer-loss analysis.
-    - "morning_brief — Shift 3 recurring workflow. Fires once per day from the scheduler (default 08:00 UTC, override via PRINCIPAL_BRIEF_MORNING_TIME env var). Targets the principal: utility_fast model renders a ≤200-word Markdown briefing covering at-risk goals, proposals awaiting decision, OE's overnight actions, and the top call. Artifact is DM'd via the principal's preferred_channel (slack_dm → discord_dm → telegram → email fallback chain). First workflow to target the principal rather than be user-invoked."
-    - "end_of_day_digest — Shift 3 recurring workflow. Fires once per day from the scheduler (default 18:00 UTC, override via PRINCIPAL_BRIEF_EOD_TIME). Same shape as morning_brief but framed as a recap: what OE did today, what's still pending, what's at risk for tomorrow, one optional 'sleep on this' question."
-    - "executive_reflection — Shift 5 recurring workflow. Fires once per day ~30 minutes before the morning brief (default 07:30 UTC, override via PRINCIPAL_REFLECTION_TIME). The first workflow OE runs ON ITSELF — not for a department, not for the principal, but for its own org-coordination judgment. Three steps: (1) gather /today + /today/activity + recent open alerts, (2) single LLM call with the full outbound toolkit (schedule_followup, send_*_dm, send_department_message, send_company_broadcast, suggest_workflow, create_alert, etc.) bounded to ≤4 iterations — the model decides per signal whether to act now, notify the right audience via the persona's 'Choosing Who to Tell' rule, raise it for the morning brief, or ignore, (3) emit a short Markdown summary with a structured tool-call log. The artifact is stored via complete_run but NOT DM'd — the morning brief surfaces what was decided via /today/activity. This operationalizes the 'When You Notice Something on Your Own' persona section (Shift 1)."
+    - "morning_brief — Shift 3 recurring workflow. Fires once per day from the scheduler (default 08:00 UTC, override via PRINCIPAL_BRIEF_MORNING_TIME env var). Targets the principal: utility_fast model renders a ≤200-word Markdown briefing covering at-risk goals, proposals awaiting decision, C-Suite's overnight actions, and the top call. Artifact is DM'd via the principal's preferred_channel (slack_dm → discord_dm → telegram → email fallback chain). First workflow to target the principal rather than be user-invoked."
+    - "end_of_day_digest — Shift 3 recurring workflow. Fires once per day from the scheduler (default 18:00 UTC, override via PRINCIPAL_BRIEF_EOD_TIME). Same shape as morning_brief but framed as a recap: what C-Suite did today, what's still pending, what's at risk for tomorrow, one optional 'sleep on this' question."
+    - "executive_reflection — Shift 5 recurring workflow. Fires once per day ~30 minutes before the morning brief (default 07:30 UTC, override via PRINCIPAL_REFLECTION_TIME). The first workflow C-Suite runs ON ITSELF — not for a department, not for the principal, but for its own org-coordination judgment. Three steps: (1) gather /today + /today/activity + recent open alerts, (2) single LLM call with the full outbound toolkit (schedule_followup, send_*_dm, send_department_message, send_company_broadcast, suggest_workflow, create_alert, etc.) bounded to ≤4 iterations — the model decides per signal whether to act now, notify the right audience via the persona's 'Choosing Who to Tell' rule, raise it for the morning brief, or ignore, (3) emit a short Markdown summary with a structured tool-call log. The artifact is stored via complete_run but NOT DM'd — the morning brief surfaces what was decided via /today/activity. This operationalizes the 'When You Notice Something on Your Own' persona section (Shift 1)."
     - "candidate_screen — Talent-platform (Phase 1) workflow. Screens one candidate against one executive-search engagement: loads the engagement + candidate from `talent.store`, consults the `talent` specialist for a fit assessment, parses the 0-100 fit score from the response, and persists score + summary back onto the candidate via `talent.store.record_screening` (which advances a raw `lead` to `screened`). Emits a structured `result` event plus a Markdown scorecard artifact. See the `talent:` key."
     - "candidate_outreach — Talent-platform (Phase 3) recruiting-automation workflow. Drafts a personalized first-touch + N follow-ups for a candidate via the `talent` specialist and schedules each touch as a REMINDER TO THE PRINCIPAL (a `scheduled_actions` row, assigned_to_person_id=principal, run_at = now + i*interval) — never a direct message to the candidate. Draft-and-approve posture: each reminder is the human checkpoint (the Executive DMs the principal the ready-to-send draft at fire time; the principal sends it manually). Deliberately uses reminders rather than a `wait_for_human` gate because gate-resume is deferred (a gate would pause and never schedule). Channel resolution maps the principal's people-channel → scheduled-actions vocabulary (slack→slack_dm etc.). See the `talent:` key."
     - "interview_coordination — Talent-platform (Phase 3) workflow. Designs an N-round interview loop + a candidate-facing availability-request via the `talent` specialist, then schedules ONE reminder to the principal to kick off scheduling (line up the panel, send the availability request). Never contacts the candidate directly. See the `talent:` key."
     - "reference_check — Talent-platform (Phase 3) workflow. Drafts a reference-check rubric (questions + the concerning-answer signal) + a reference-facing outreach via the `talent` specialist, then schedules ONE reminder to the principal to conduct the checks. Never contacts references directly. See the `talent:` key."
-    - "offer_approval — Talent-platform (close-the-hire-loop) workflow, and the first BUILT-IN to pause on a WaitForHumanEvent gate. Drafts the offer package for an interviewed candidate — terms via the `chro` specialist anchored on the engagement's comp_band, closing plan (risks, competing-offer posture, recommended expiry window) via the `talent` specialist — persists an Offer row (status pending_approval, full package Markdown on `package_md`), advances the candidate interviewed→offer, DMs the HIRING_SIGNOFF approver (find_approvers, principal fallback) the sign-off request via handle_message_person, yields result+artifact, THEN yields the gate (timeout 72h, on_timeout=escalate, expected_reply_shape=approve_reject, context_summary prefixed `offer_id=<n>` for later matching). The run stays awaiting_human/resolved; the extended transition is the explicit extend_offer follow-up. OE never sends the offer to the candidate. See the `talent:` key."
+    - "offer_approval — Talent-platform (close-the-hire-loop) workflow, and the first BUILT-IN to pause on a WaitForHumanEvent gate. Drafts the offer package for an interviewed candidate — terms via the `chro` specialist anchored on the engagement's comp_band, closing plan (risks, competing-offer posture, recommended expiry window) via the `talent` specialist — persists an Offer row (status pending_approval, full package Markdown on `package_md`), advances the candidate interviewed→offer, DMs the HIRING_SIGNOFF approver (find_approvers, principal fallback) the sign-off request via handle_message_person, yields result+artifact, THEN yields the gate (timeout 72h, on_timeout=escalate, expected_reply_shape=approve_reject, context_summary prefixed `offer_id=<n>` for later matching). The run stays awaiting_human/resolved; the extended transition is the explicit extend_offer follow-up. C-Suite never sends the offer to the candidate. See the `talent:` key."
     - "new_hire_onboarding — Talent-platform (close-the-hire-loop) workflow: the placed→Person handoff. Requires the candidate to be `placed` OR hold an accepted offer. Idempotently creates/updates the Person record (match by case-insensitive email, else exact full_name; role = engagement.role_title; department_slugs only when the engagement's free-text department resolves in the department registry; NO authority scopes granted), drafts a role-specific 30/60/90 plan via the `chro` specialist, and schedules day-7/30/60/90 check-in reminders to the PRINCIPAL (past milestones skipped when start_date is in the past). Never contacts the new hire directly. See the `talent:` key."
 
 talent:
@@ -1783,7 +1783,7 @@ talent:
     tools `create_engagement` / `create_candidate`, and the offer-lifecycle
     tools `create_offer` (manual draft path when the principal dictates terms;
     the workflow is the full drafted-and-approved path), `extend_offer`
-    (records that the PRINCIPAL sent the offer — OE never sends it — checks
+    (records that the PRINCIPAL sent the offer — C-Suite never sends it — checks
     the recorded sign-off via talent.offers, schedules expiry nudges to the
     principal at T−3d/T−1d/T+12h as kind=ad_hoc scheduled_actions, future ones
     only), and `record_offer_decision` (terminal outcome; cancels pending
@@ -1896,7 +1896,7 @@ talent:
     nudges remind, they never write — only record_offer_decision flips the
     status. The /today digest's `offers_expiring_soon` is computed straight
     from `expires_at`, so a missed nudge can't make the briefing stale. The
-    candidate-contact invariant extends to offers and onboarding: OE never
+    candidate-contact invariant extends to offers and onboarding: C-Suite never
     sends an offer to a candidate and never messages a new hire — the approver
     gets the sign-off request, the principal gets the reminders. UI: the
     candidate detail page (`/talent/candidates/{id}`) renders an OfferPanel
@@ -1905,7 +1905,7 @@ talent:
     row.
   deferred: |
     CRM/ATS integration (rest of Phase 3) and multi-tenancy (Phase 4) are NOT in
-    these slices. Direct candidate sends (OE emailing candidates itself, outside
+    these slices. Direct candidate sends (C-Suite emailing candidates itself, outside
     the roster-gated Person/DM model) are deferred as "Phase 3b". The
     /architecture UI page (sections.py / page.tsx / prebuilt JSON) is
     intentionally not wired for the talent module yet.
@@ -1985,7 +1985,7 @@ staff_onboarding:
         update tasks/phase. Both kinds are handled in scheduler/runner.py
         (`_run_onboarding_kickoff` / `_run_onboarding_checkin`).
   talent_tie_in: |
-    Suggest-on-placed: when a talent candidate moves to `placed`, OE surfaces an
+    Suggest-on-placed: when a talent candidate moves to `placed`, C-Suite surfaces an
     "onboard {name}" suggestion (no auto-fire, never messages the candidate).
     Plan creation can pull role context from the engagement; delivery + ramp
     activate only once the hire exists as a roster Person.
@@ -2275,13 +2275,13 @@ integrations:
         TELEGRAM_DEFAULT_CHAT_ID env vars. Errors with "company
         default <integration> channel not configured" when the env
         is unset; the persona's "Choosing Who to Tell" rule
-        instructs OE to fall back to /today-only when this happens.
+        instructs C-Suite to fall back to /today-only when this happens.
 
     These differ from the per-Person DM tools (send_slack_dm /
     send_discord_dm / send_telegram_message) in that they target
     rooms / channels, not specific people — the People-roster gate
     that protects DMs does not apply. They are the structural
-    expression of OE's outbound-targeting judgment: OE picks among
+    expression of C-Suite's outbound-targeting judgment: C-Suite picks among
     DM / dept channel / company broadcast by which tool it calls,
     with the persona's `## Choosing Who to Tell` section telling it
     when each is appropriate.
@@ -2431,8 +2431,8 @@ integrations:
     DM channel. Failure to schedule never blocks the booking.
   mcp_server: |
     csuite.mcp_server — C-Suite exposed AS an MCP server, the
-    inverse of `mcp_gateway:` above (gateway = OE consumes remote MCP servers;
-    server = external MCP clients consume OE). Built on FastMCP, Streamable-HTTP
+    inverse of `mcp_gateway:` above (gateway = C-Suite consumes remote MCP servers;
+    server = external MCP clients consume C-Suite). Built on FastMCP, Streamable-HTTP
     transport, mounted into the FastAPI app at `/mcp` (streamable_http_path="/"
     mounted under "/mcp" so the external endpoint is exactly `/mcp`; compliant
     clients follow the trailing-slash 307 to `/mcp/`).
@@ -2450,7 +2450,7 @@ integrations:
     a browser rebinding attack cannot supply the key, and traffic arrives behind
     the Fly TLS proxy. The shared secret is the real access control.
 
-    Surface — what's valuable beyond chat (OE already has six chat channels, so
+    Surface — what's valuable beyond chat (C-Suite already has six chat channels, so
     a chat-only server adds nothing): company-grounded context as READ-ONLY
     resources, and the specialist council as tools.
       Resources: oe://company/profile, oe://today/briefing, oe://today/activity,
@@ -2484,7 +2484,7 @@ integrations:
     long-running async generators (minutes) that would exceed a single MCP
     tool-call's request/response window; only the catalog is listed. If added
     later, use a job-handle pattern (start_workflow → run_id, then poll) over the
-    existing workflows run-persistence. MCP `prompts` are skipped — OE workflows
+    existing workflows run-persistence. MCP `prompts` are skipped — C-Suite workflows
     are server-executed orchestrations, not message templates.
 
     Prompt-caching: unaffected. This path is parallel to chat; resources are
@@ -2506,9 +2506,9 @@ integrations:
     without per-channel dispatch logic.
   outbound_reply_context: |
     Cross-session DM context linkage — fixes the failure where the
-    principal tells OE "DM Alex about X" in one session, OE sends the
+    principal tells C-Suite "DM Alex about X" in one session, C-Suite sends the
     DM, and then Alex's reply lands in a fresh per-person session
-    (`discord:dm:{alex_id}`) with empty history, so OE has no idea what
+    (`discord:dm:{alex_id}`) with empty history, so C-Suite has no idea what
     Alex is replying about.
 
     Write side — when a direct-send tool (`send_discord_dm`,
@@ -2622,7 +2622,7 @@ clients:
   module: csuite.clients
   intent: |
     Named client-company slots — multi-client support for fractional
-    executives. One OE instance serves several client companies, exactly one
+    executives. One C-Suite instance serves several client companies, exactly one
     active at a time. A slot is an on-disk save file of the FULL company
     context; activating a slot saves the current client back to its slot and
     restores the target. Single-company installs never touch this: the

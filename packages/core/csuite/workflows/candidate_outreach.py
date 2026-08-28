@@ -4,7 +4,7 @@ Drafts a personalized first-touch plus N scheduled follow-ups for a candidate on
 an engagement (via the talent specialist) and schedules each touch as a
 *reminder to the principal* — never a direct message to the candidate.
 
-Posture: draft-and-approve. OE never emails candidates. Each scheduled reminder
+Posture: draft-and-approve. C-Suite never emails candidates. Each scheduled reminder
 is the human checkpoint: when it fires, the Executive DMs the principal the
 ready-to-send draft for review and manual sending. This sidesteps the roster-
 gated outbound model (candidates are not `Person` records) and the deferred
@@ -232,8 +232,8 @@ def _assemble_artifact(
         ctx,
         title="Outreach Sequence",
         disclaimer=(
-            "Drafts only — OE schedules a reminder to you for each touch; you "
-            "review and send to the candidate. OE never contacts candidates directly."
+            "Drafts only — C-Suite schedules a reminder to you for each touch; you "
+            "review and send to the candidate. C-Suite never contacts candidates directly."
         ),
         meta_lines=[f"**Cadence:** first touch now, then every {interval_days} day(s)  "],
     )

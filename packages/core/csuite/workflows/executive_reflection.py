@@ -1,10 +1,10 @@
-"""Executive reflection workflow — OE's daily standup with itself.
+"""Executive reflection workflow — C-Suite's daily standup with itself.
 
 Once a day (before the morning brief), the Executive walks its own
 org state and decides what to act on. This operationalizes the
 ``## When You Notice Something on Your Own`` rule from the persona
 (Shift 1) and the ``## Choosing Who to Tell`` audience-selection
-rule (Shift 3a) — by giving OE actual tools it can fire WITHOUT a
+rule (Shift 3a) — by giving C-Suite actual tools it can fire WITHOUT a
 user prompt.
 
 Pipeline:
@@ -270,13 +270,13 @@ class ExecutiveReflectionWorkflow(Workflow):
     name = "executive_reflection"
     title = "Executive Reflection"
     description = (
-        "OE's daily solo standup. Walks the org state — at-risk goals, "
+        "C-Suite's daily solo standup. Walks the org state — at-risk goals, "
         "pending proposals, awaiting humans, recent activity, open "
         "alerts — and decides per signal: act now, notify the right "
         "audience, raise in the morning brief, or ignore. Fires "
         "automatically via the scheduler ~30 minutes before the "
         "morning brief; can be invoked manually for testing. The "
-        "first workflow in the registry that OE runs ON ITSELF, not "
+        "first workflow in the registry that C-Suite runs ON ITSELF, not "
         "on a department or for the principal."
     )
     section = WorkflowSection.OPERATING

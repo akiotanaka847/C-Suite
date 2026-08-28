@@ -6,8 +6,8 @@ Executive's company-grounded context and structured capabilities to
 external MCP clients (Claude Desktop, Cursor, Claude Code, other agents)
 over a Streamable-HTTP endpoint mounted at ``/mcp`` in the FastAPI app.
 
-The value is not chat (OE already has six chat channels) — it is putting
-OE's curated company state (resources) and its specialist council
+The value is not chat (C-Suite already has six chat channels) — it is putting
+C-Suite's curated company state (resources) and its specialist council
 (tools) *inside another agent's loop*.
 
 Public surface:

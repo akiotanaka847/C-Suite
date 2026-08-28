@@ -19,7 +19,7 @@ interface BrandMarkProps {
 export default function BrandMark({ size = "sm" }: BrandMarkProps) {
   return (
     <div className={BOX_CLASSES[size]} aria-hidden>
-      <span className={TEXT_CLASSES[size]}>OE</span>
+      <span className={TEXT_CLASSES[size]}>C-Suite</span>
     </div>
   );
 }

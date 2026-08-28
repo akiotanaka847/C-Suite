@@ -210,7 +210,7 @@ def extend_offer(
     (``has_principal_consent``, mirroring the authority gate's consent fast
     path) with the unrecorded sign-off flagged in ``warnings``.
 
-    OE never sends the offer itself — this records that the principal
+    C-Suite never sends the offer itself — this records that the principal
     extended it and queues the expiry reminders.
 
     Raises :class:`OfferActionError` on unknown offer, non-extensible status,

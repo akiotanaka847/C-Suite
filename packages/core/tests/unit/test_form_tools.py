@@ -1,4 +1,4 @@
-"""Unit tests for the Ask OE ``propose_form_values`` tool.
+"""Unit tests for the Ask C-Suite ``propose_form_values`` tool.
 
 The tool is proposal-only: the handler validates shape and acknowledges
 delivery; the actual values reach the client as a ``form_patch`` SSE

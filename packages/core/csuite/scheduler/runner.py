@@ -612,7 +612,7 @@ async def _execute_action(
         return
 
     # ------------------------------------------------------------------
-    # Executive reflection (Shift 5) — OE's daily solo standup. Runs
+    # Executive reflection (Shift 5) — C-Suite's daily solo standup. Runs
     # ~30 minutes before the morning brief; walks the org state and
     # fires the right outbound tools per-signal. Artifact is stored
     # but not DM'd to the principal (the brief will surface what was
@@ -749,7 +749,7 @@ async def _execute_action(
 # brief at midnight PT.
 _DEFAULT_MORNING_TIME = "08:00"
 _DEFAULT_EOD_TIME = "18:00"
-# Executive reflection runs ~30 minutes before the morning brief so OE
+# Executive reflection runs ~30 minutes before the morning brief so C-Suite
 # has acted on whatever it could before the principal opens the brief.
 _DEFAULT_REFLECTION_TIME = "07:30"
 

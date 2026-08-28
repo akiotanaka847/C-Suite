@@ -1,6 +1,12 @@
 import { signIn, auth } from "@/auth";
 import { redirect } from "next/navigation";
 
+// Mirrors the guard in auth.ts. Both must hold or the button is not rendered
+// and the underlying provider does not exist.
+const DEV_BYPASS_ENABLED =
+  process.env.NODE_ENV === "development" && process.env.DEV_AUTH_BYPASS === "true";
+const DEV_BYPASS_EMAIL = (process.env.DEV_AUTH_BYPASS_EMAIL ?? "").trim();
+
 type SearchParams = Promise<{ callbackUrl?: string; error?: string }>;
 
 // Only same-origin paths allowed — a leading `/` followed by anything other
@@ -49,6 +55,26 @@ export default async function SignInPage({ searchParams }: { searchParams: Searc
             Sign in with Google
           </button>
         </form>
+
+        {DEV_BYPASS_ENABLED && DEV_BYPASS_EMAIL && (
+          <form
+            action={async () => {
+              "use server";
+              await signIn("dev-bypass", { redirectTo: safeDest });
+            }}
+            className="mt-3"
+          >
+            <button
+              type="submit"
+              className="w-full rounded-md border border-dashed border-amber-500/60 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-300 hover:bg-amber-500/20 transition"
+            >
+              Local dev sign-in — {DEV_BYPASS_EMAIL}
+            </button>
+            <p className="mt-2 text-center text-xs text-fg-muted">
+              Development only. Not present in production builds.
+            </p>
+          </form>
+        )}
       </div>
     </main>
   );

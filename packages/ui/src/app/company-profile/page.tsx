@@ -23,9 +23,9 @@ function textToList(text: string): string[] {
     .filter(Boolean);
 }
 
-// ── Ask OE plumbing ──────────────────────────────────────────────────────────
+// ── Ask C-Suite plumbing ──────────────────────────────────────────────────────────
 // The page registers one flat form descriptor covering every section; when
-// Ask OE proposes values, they land here as `pending` and each section's
+// Ask C-Suite proposes values, they land here as `pending` and each section's
 // effect merges its own keys into its draft state and flips into edit mode —
 // so the user reviews through the section's normal Save button.
 
@@ -55,7 +55,7 @@ const LIST_FIELDS = new Set([
   "departments", "leadership_team",
 ]);
 
-/** Flat snapshot of the SAVED profile — feeds both the Ask OE form
+/** Flat snapshot of the SAVED profile — feeds both the Ask C-Suite form
  * descriptor (getFields) and the undo restore values. */
 function snapshotProfile(profile: CompanyProfile): Record<string, unknown> {
   return {
@@ -159,7 +159,7 @@ interface SectionProps {
   onSave: () => Promise<void>;
   viewContent: React.ReactNode;
   editContent: React.ReactNode;
-  // Optional controlled editing — used by Ask OE to flip a section into
+  // Optional controlled editing — used by Ask C-Suite to flip a section into
   // edit mode when it applies suggested values. Uncontrolled by default.
   editing?: boolean;
   onEditingChange?: (v: boolean) => void;
@@ -230,7 +230,7 @@ function Section({
   );
 }
 
-// Merges Ask OE `pending` values into a section's draft state (values are
+// Merges Ask C-Suite `pending` values into a section's draft state (values are
 // already validated/coerced page-side) and flips the section into edit
 // mode so the suggestion is visible behind the normal Save button.
 // Returns the controlled editing pair for <Section>.
@@ -287,7 +287,7 @@ export default function CompanyProfilePage() {
     []
   );
 
-  // Register with Ask OE once the profile is loaded. Field values are the
+  // Register with Ask C-Suite once the profile is loaded. Field values are the
   // SAVED profile values — unsaved per-section drafts stay local to each
   // section until the user hits Save.
   useAskOEFormContext(
@@ -740,7 +740,7 @@ interface SectionComponentProps {
   profile: CompanyProfile;
   saving: boolean;
   onSave: (patch: Partial<CompanyProfile>) => Promise<void>;
-  // Ask OE suggested values (flat keys) — sections merge their own keys
+  // Ask C-Suite suggested values (flat keys) — sections merge their own keys
   // into draft state and flip into edit mode when one lands.
   pending: PendingValues | null;
 }

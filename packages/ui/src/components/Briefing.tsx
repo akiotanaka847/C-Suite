@@ -1374,7 +1374,7 @@ export default function Briefing({ onContinue, showHeader = false, firstName }: 
     }
   }, [actedAlertIds, refreshToday]);
 
-  // Approve-with-edits: user has tweaked the draft text and wants OE to
+  // Approve-with-edits: user has tweaked the draft text and wants C-Suite to
   // send exactly what they wrote (no LLM rephrasing). Same optimistic-
   // removal + ack pattern as plain approve; the chat seed instructs the
   // Executive to use the edited body verbatim.

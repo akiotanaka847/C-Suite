@@ -145,7 +145,7 @@ def initialize_db(db_path: Path | None = None) -> None:
 def _migrate_add_last_reviewed_at_column(conn: sqlite3.Connection) -> None:
     """Add the Phase A `last_reviewed_at` column to `department_goals` if missing.
 
-    Records the wall-clock when OE last graded a Goal (via the
+    Records the wall-clock when C-Suite last graded a Goal (via the
     department_check_in workflow or, in Phase B, a chat-driven tool
     call). Distinct from `updated_at`, which bumps on content edits;
     keeping them separate lets the UI render an honest "Last reviewed
@@ -170,7 +170,7 @@ def _migrate_add_channel_columns(conn: sqlite3.Connection) -> None:
     """Add the Shift 3 channel columns to `departments` if missing.
 
     Department-scoped broadcast channels (`slack_channel_id`,
-    `discord_channel_id`, `telegram_chat_id`) let OE post to a department's
+    `discord_channel_id`, `telegram_chat_id`) let C-Suite post to a department's
     team room as an alternative to DMing the head. Additive ALTER pattern
     mirrors the episodic.py migrations — duplicate-column errors on a
     concurrent boot race are treated as success.
@@ -767,10 +767,10 @@ def record_goal_review(
 
     Used by the ``department_check_in`` workflow (and, in Phase B, the
     ``update_department_goal`` agent tool when only status changes) to
-    record OE's verdict on a Goal. Only ``status`` and ``last_reviewed_at``
+    record C-Suite's verdict on a Goal. Only ``status`` and ``last_reviewed_at``
     move — content edits go through ``update_goal``. Keeping the two
     paths distinct lets the UI render "Last reviewed Nd ago" honestly:
-    a principal renaming the KR on Tuesday and OE re-grading it on
+    a principal renaming the KR on Tuesday and C-Suite re-grading it on
     Wednesday must be distinguishable.
 
     Always overwrites — the workflow re-grades every Goal each cycle,

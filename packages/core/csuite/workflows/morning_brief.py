@@ -3,7 +3,7 @@
 Renders a one-screen Markdown summary covering:
   • At-risk department goals
   • Proposals awaiting the principal's decision
-  • Anything OE acted on since the last brief
+  • Anything C-Suite acted on since the last brief
   • The top decision the principal needs to make today
 
 The scheduler fires a `principal_brief_morning` action once per day at
@@ -75,7 +75,7 @@ class MorningBriefWorkflow(Workflow):
             WorkflowStepDef(
                 id="load_context",
                 title="Gather today's state",
-                description="Pull /today data, recent OE activity, and pending proposals.",
+                description="Pull /today data, recent C-Suite activity, and pending proposals.",
             ),
             WorkflowStepDef(
                 id="synthesize",

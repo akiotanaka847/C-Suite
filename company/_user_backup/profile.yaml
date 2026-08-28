@@ -1,0 +1,28 @@
+company:
+  annual_revenue_arr: null
+  competitive_landscape:
+    competitive_advantages: []
+    primary_competitors: []
+  culture:
+    operating_principles: []
+    values: []
+  financials:
+    burn_rate_monthly: null
+    key_metrics: {}
+    runway_months: null
+  founding_year: null
+  headcount: null
+  industry: ''
+  mission: ''
+  name: ''
+  org_structure:
+    departments: []
+    leadership_team: []
+  stage: ''
+  strategic_priorities:
+    current_year: []
+    north_star_metric: ''
+  target_customer:
+    pain_points: []
+    profile: ''
+  vision: ''

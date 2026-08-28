@@ -70,7 +70,7 @@ WORKFLOW_REGISTRY: dict[str, Workflow] = {
     # and dispatches the artifact via DM.
     "morning_brief": MorningBriefWorkflow(),
     "end_of_day_digest": EndOfDayDigestWorkflow(),
-    # `executive_reflection` is the first workflow OE runs ON ITSELF —
+    # `executive_reflection` is the first workflow C-Suite runs ON ITSELF —
     # not targeting a department or the principal but its own org
     # coordination decisions. Fires ~30 minutes before the morning
     # brief, can invoke real tools (DMs, broadcasts, follow-ups).

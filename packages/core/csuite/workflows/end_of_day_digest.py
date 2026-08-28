@@ -1,7 +1,7 @@
 """End-of-day digest workflow — a short proactive recap to the principal.
 
 Renders a one-screen Markdown summary covering:
-  • What OE did today on its own initiative
+  • What C-Suite did today on its own initiative
   • What's still pending / awaiting decisions
   • What's at risk for tomorrow
   • One thing the principal might sleep on before deciding
@@ -78,7 +78,7 @@ def _render_eod_context(
     parts: list[str] = [f"PERIOD: {period_label}\n"]
 
     if activity:
-        parts.append("WHAT OE DID TODAY (most recent first):")
+        parts.append("WHAT C-Suite DID TODAY (most recent first):")
         for item in activity[:20]:
             parts.append(
                 f"- [{item.get('at', '')[:10]}] {item.get('kind', 'action')}: "
@@ -125,7 +125,7 @@ class EndOfDayDigestWorkflow(Workflow):
     name = "end_of_day_digest"
     title = "End-of-Day Digest"
     description = (
-        "A short proactive recap for the principal: what OE did today, "
+        "A short proactive recap for the principal: what C-Suite did today, "
         "what's still pending, what's at risk for tomorrow. Fires "
         "automatically each evening via the scheduler; can also be "
         "invoked manually."
@@ -141,7 +141,7 @@ class EndOfDayDigestWorkflow(Workflow):
             WorkflowStepDef(
                 id="load_context",
                 title="Gather today's actions and pending state",
-                description="Pull today's OE activity, pending proposals, and at-risk goals.",
+                description="Pull today's C-Suite activity, pending proposals, and at-risk goals.",
             ),
             WorkflowStepDef(
                 id="synthesize",

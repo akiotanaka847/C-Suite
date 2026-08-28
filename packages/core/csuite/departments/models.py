@@ -47,10 +47,10 @@ class Goal(BaseModel):
     status: GoalStatus = "on_track"
     created_at: str = ""
     updated_at: str = ""
-    # When OE last graded this Goal (via the department_check_in workflow
+    # When C-Suite last graded this Goal (via the department_check_in workflow
     # or, in Phase B, a chat-driven `update_department_goal` tool call).
     # Distinct from `updated_at`, which bumps on any content edit — a
-    # principal editing the key_result on Tuesday and OE reviewing it on
+    # principal editing the key_result on Tuesday and C-Suite reviewing it on
     # Wednesday must be distinguishable so the UI can render "Last
     # reviewed Nd ago" honestly. Empty string = never reviewed.
     last_reviewed_at: str = ""
@@ -85,10 +85,10 @@ class DepartmentConfig(BaseModel):
     head_persona_slug: str | None = None
     # cadence_name -> spec, e.g. {"check_in": "daily@09:00"}. Parsed by Phase 5.
     cadences: dict[str, str] = Field(default_factory=dict)
-    # Department-scoped broadcast channels. When set, OE can post to the
+    # Department-scoped broadcast channels. When set, C-Suite can post to the
     # department's team room via `send_department_message` instead of (or
     # in addition to) DMing the department head. Nullable — a department
-    # with no channel configured simply has no broadcast surface, and OE
+    # with no channel configured simply has no broadcast surface, and C-Suite
     # falls back to DMing the head (or the company channel) per the
     # "Choosing Who to Tell" judgment in the persona.
     slack_channel_id: str | None = None

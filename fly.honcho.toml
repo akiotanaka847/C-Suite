@@ -6,7 +6,7 @@
 #   embed.process.csuite-honcho-dev.internal (per-process group DNS — embed process)
 #   <id>.vm.csuite-honcho-dev.internal  (per-machine 6PN DNS)
 # Set HONCHO_BASE_URL=http://csuite-honcho-dev.flycast:8000 in the
-# csuite-api-dev secrets to point OE's wrapper at this service.
+# csuite-api-dev secrets to point C-Suite's wrapper at this service.
 #
 # Three process groups:
 #   api      — FastAPI on :8000. Handles all client traffic.

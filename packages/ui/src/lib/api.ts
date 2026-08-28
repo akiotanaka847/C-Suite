@@ -57,7 +57,7 @@ export interface DebugEvent {
   turn_id?: string | null;
 }
 
-// ---- Ask OE page context (panel-only) ----
+// ---- Ask C-Suite page context (panel-only) ----
 // Sent with panel turns so the Executive knows what page/form the user is
 // looking at. Mirrors PageContext / PageFormDescriptor in the backend's
 // api/models.py. The backend renders it into the USER turn (cache-safe).
@@ -106,7 +106,7 @@ export interface StreamChatOptions {
   // the multipart /chat/upload route; documents are auto-indexed into
   // Company Resources and images are forwarded as vision blocks.
   files?: File[];
-  // Ask OE panel only — what page/form the user is looking at. Ignored on
+  // Ask C-Suite panel only — what page/form the user is looking at. Ignored on
   // the multipart route (the panel doesn't support attachments).
   pageContext?: PageContext;
 }
@@ -1861,7 +1861,7 @@ export interface DepartmentConfig {
   head_person_id: number | null;
   head_persona_slug: string | null;
   cadences: Record<string, string>;
-  // Department-scoped broadcast channels. When set, OE can post to
+  // Department-scoped broadcast channels. When set, C-Suite can post to
   // the department's team room via `send_department_message` instead
   // of (or in addition to) DMing the head.
   slack_channel_id: string | null;
@@ -1882,7 +1882,7 @@ export interface Goal {
   status: "on_track" | "at_risk" | "off_track";
   created_at: string;
   updated_at: string;
-  // When OE last graded this goal (department_check_in workflow, or
+  // When C-Suite last graded this goal (department_check_in workflow, or
   // Phase B: a chat-driven `update_department_goal` tool call). Distinct
   // from `updated_at`, which bumps on any content edit. Empty = never
   // reviewed.

@@ -8,7 +8,7 @@
 #   - All LLM calls (deriver, summary, dialectic levels, dream deduction)
 #     use Honcho's `openai` transport but point at OpenRouter. OpenRouter
 #     fronts Anthropic / OpenAI / Voyage / etc., so a single Fly secret
-#     (`LLM_OPENAI_API_KEY` = OE's existing OpenRouter key) drives every
+#     (`LLM_OPENAI_API_KEY` = C-Suite's existing OpenRouter key) drives every
 #     outbound LLM call. The `model` field uses OpenRouter slugs
 #     (`anthropic/claude-haiku-4.5`, etc.).
 #   - Embeddings come from a local fastembed sidecar (see
@@ -33,7 +33,7 @@ POOL_SIZE = 10
 
 [auth]
 # Auth-in-depth: even on Fly's private 6PN network the API requires a
-# valid JWT. JWT_SECRET comes from a Fly secret; OE's HONCHO_API_KEY is
+# valid JWT. JWT_SECRET comes from a Fly secret; C-Suite's HONCHO_API_KEY is
 # a token derived from it via src.security.create_admin_jwt().
 USE_AUTH = true
 

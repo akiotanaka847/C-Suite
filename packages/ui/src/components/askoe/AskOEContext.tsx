@@ -28,7 +28,7 @@ export interface AppliedPatch {
 }
 
 /**
- * What a page registers so Ask OE can describe and fill its form.
+ * What a page registers so Ask C-Suite can describe and fill its form.
  * `getFields` is called at send time (values snapshot); `applyPatch`
  * writes proposed values into the form's controlled state and returns
  * what stuck plus an undo closure.
@@ -228,11 +228,11 @@ export function useAskOE(): AskOEContextValue {
   return ctx;
 }
 
-/** Tailwind classes marking an input as an OE suggestion (cleared on edit). */
+/** Tailwind classes marking an input as an C-Suite suggestion (cleared on edit). */
 export const SUGGESTED_CLS = "ring-1 ring-indigo-400/70 bg-indigo-500/10";
 
 /**
- * Register a form with the Ask OE panel for the lifetime of the calling
+ * Register a form with the Ask C-Suite panel for the lifetime of the calling
  * component. Pass `null` to skip registration (e.g. modal closed).
  *
  * Returns helpers for the suggested-value highlight: append

@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 
 class PageFormField(BaseModel):
-    """One field of a form currently on the user's screen (Ask OE panel).
+    """One field of a form currently on the user's screen (Ask C-Suite panel).
 
     ``type`` is a UI-side hint, not a validation contract: "text" |
     "textarea" | "number" | "boolean" | "select" | "json". For ``json``
@@ -33,7 +33,7 @@ class PageFormDescriptor(BaseModel):
 
 
 class PageContext(BaseModel):
-    """What the user is looking at when they message from the Ask OE panel.
+    """What the user is looking at when they message from the Ask C-Suite panel.
 
     Rendered into the USER TURN (never a cached system block — see
     CLAUDE.md "Prompt Caching") so the Executive can explain the current
@@ -54,7 +54,7 @@ class ChatRequest(BaseModel):
     # Per-message opt-in: when true, route through Committee adversarial
     # review before streaming the (revised) response to the client.
     committee_review: bool = False
-    # Set by the Ask OE side panel only; absent on the main chat page.
+    # Set by the Ask C-Suite side panel only; absent on the main chat page.
     page_context: PageContext | None = None
 
 

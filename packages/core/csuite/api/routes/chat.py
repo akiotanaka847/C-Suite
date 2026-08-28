@@ -73,7 +73,7 @@ _PAGE_FORM_JSON_MAX_CHARS = 12_000
 
 
 def _build_page_context_block(page_context: PageContext | None) -> str:
-    """Render the Ask OE panel's page context for the user turn.
+    """Render the Ask C-Suite panel's page context for the user turn.
 
     Pure string builder (unit-testable, no I/O beyond the prebuilt guide
     file read). Returns "" when no page context was sent, so the main chat

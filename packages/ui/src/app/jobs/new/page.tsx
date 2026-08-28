@@ -51,7 +51,7 @@ const inputCls =
   "w-full px-3 py-1.5 text-sm rounded-md bg-surface/60 border border-line text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-1 focus:ring-indigo-500/40";
 const labelCls = "block text-xs font-medium text-fg-muted mb-1";
 
-// ---- Ask OE form descriptor helpers ---------------------------------------
+// ---- Ask C-Suite form descriptor helpers ---------------------------------------
 
 const INPUT_FIELDS_SCHEMA =
   'JSON array of input-field objects: {"name": snake_case string, "label": string, ' +
@@ -178,7 +178,7 @@ function BuilderInner() {
       .finally(() => setLoading(false));
   }, [editName]);
 
-  // ---- Ask OE registration -------------------------------------------------
+  // ---- Ask C-Suite registration -------------------------------------------------
   // Recreated each render so getFields/applyPatch close over current state;
   // the hook re-registers only when formId changes and refreshes closures
   // on every render.

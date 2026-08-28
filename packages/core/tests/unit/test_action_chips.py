@@ -362,7 +362,7 @@ _KNOWN_READ_ONLY_TOOLS: frozenset[str] = frozenset({
 
 
 def _all_registered_tool_names() -> set[str]:
-    """Union of every tool name OE can call through the agentic loop.
+    """Union of every tool name C-Suite can call through the agentic loop.
 
     Kept here as a helper so both drift tests use the exact same source
     of truth — drift between them would defeat the guard.

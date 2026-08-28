@@ -1,7 +1,7 @@
-"""Anthropic tool definition + handler for the Ask OE form-fill tier.
+"""Anthropic tool definition + handler for the Ask C-Suite form-fill tier.
 
 ``propose_form_values`` lets the Executive propose values for a form the
-user currently has on screen (the Ask OE side panel sends the form's
+user currently has on screen (the Ask C-Suite side panel sends the form's
 descriptor inside a ``<page_context>`` block in the user turn). The
 proposal is delivered to the client as a ``form_patch`` SSE event; the UI
 places the values into the form as highlighted suggestions and the user

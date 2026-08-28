@@ -183,7 +183,7 @@ SECTIONS: list[SectionSpec] = [
         id="external_monitoring",
         title="External Monitoring",
         sub=(
-            "How OE watches the outside world. A periodic scan polls the "
+            "How C-Suite watches the outside world. A periodic scan polls the "
             "watchlist's vendor status pages, RSS / Atom feeds, and stock "
             "tickers; qualifying signals flow into the existing alert "
             "pipeline so they surface as briefing proposals on the same "
@@ -234,7 +234,7 @@ SECTIONS: list[SectionSpec] = [
         diagram_kind="flowchart",
     ),
     # `talent` — the talent-intelligence / executive-search vertical built on
-    # OE (new top-level module under packages/core; see `talent:` in
+    # C-Suite (new top-level module under packages/core; see `talent:` in
     # architecture-facts.yaml). Phases 1-3: entities + store, candidate
     # matching graph, and recruiting-automation workflows, plus the /talent UI.
     SectionSpec(

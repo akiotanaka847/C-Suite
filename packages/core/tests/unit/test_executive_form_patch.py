@@ -1,4 +1,4 @@
-"""Agent-loop and message-build behavior for the Ask OE form-fill tier.
+"""Agent-loop and message-build behavior for the Ask C-Suite form-fill tier.
 
 Covers the two invariants the feature hangs on:
 

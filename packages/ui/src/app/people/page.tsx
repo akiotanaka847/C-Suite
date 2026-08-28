@@ -140,7 +140,7 @@ function AddPersonModal({ onCreated, onClose }: AddPersonModalProps) {
     nameRef.current?.focus();
   }, []);
 
-  // Registered with Ask OE for the modal's lifetime — closing the modal
+  // Registered with Ask C-Suite for the modal's lifetime — closing the modal
   // unregisters automatically (the hook's cleanup runs on unmount).
   const { suggestedCls, clearSuggested } = useAskOEFormContext({
     formId: "add_person",

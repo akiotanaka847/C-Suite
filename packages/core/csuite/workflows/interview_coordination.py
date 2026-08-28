@@ -2,7 +2,7 @@
 
 Drafts an interview loop (rounds, what each tests) plus a candidate-facing
 availability-request message, then schedules a single reminder to the principal
-to kick off scheduling. Draft-and-approve: OE never contacts the candidate
+to kick off scheduling. Draft-and-approve: C-Suite never contacts the candidate
 directly — the reminder hands the principal the ready-to-send availability
 request and the loop plan.
 
@@ -190,8 +190,8 @@ def _assemble_artifact(ctx: ReminderContext, loop: str, availability: str) -> st
         ctx,
         title="Interview Coordination",
         disclaimer=(
-            "Drafts only — OE schedules a reminder to you to coordinate; you line up "
-            "the panel and send the availability request. OE never contacts the "
+            "Drafts only — C-Suite schedules a reminder to you to coordinate; you line up "
+            "the panel and send the availability request. C-Suite never contacts the "
             "candidate directly."
         ),
     )

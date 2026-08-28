@@ -9,7 +9,7 @@ import DynamicSection from '@/components/architecture/DynamicSection';
 // packages/core/csuite/guide/sections.py.
 const SECTIONS = [
   { id: 'chat', label: 'Chat & Briefing', sub: "The main surface — talk to the Executive, and land on a briefing of what's happened." },
-  { id: 'ask_oe', label: 'Ask OE', sub: 'The page-aware assistant panel — explains any screen and fills forms for you to review.' },
+  { id: 'ask_oe', label: 'Ask C-Suite', sub: 'The page-aware assistant panel — explains any screen and fills forms for you to review.' },
   { id: 'today', label: 'Today / Morning Brief', sub: 'What needs you right now: proposals, department health, and people with open items.' },
   { id: 'pulse', label: 'Pulse (Memory)', sub: "The Executive's running memory — decisions made, initiatives in flight, advice gathered." },
   { id: 'review', label: 'Review Queue', sub: 'Approve, reject, or correct incoming knowledge before the Executive relies on it.' },

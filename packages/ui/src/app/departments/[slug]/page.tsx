@@ -798,12 +798,12 @@ export default function DepartmentDetailPage() {
                     </div>
                   </section>
 
-                  {/* Card 4: Broadcast channels — OE can post to these team rooms */}
+                  {/* Card 4: Broadcast channels — C-Suite can post to these team rooms */}
                   <section className="rounded-xl border border-line bg-surface-elevated px-4 py-4">
                     <h3 className="text-xs font-semibold uppercase tracking-wide text-fg-muted mb-1">Team channels</h3>
                     <p className="text-[10px] text-fg-muted mb-3">
                       When set, the Executive can post department-scoped updates to these rooms via{" "}
-                      <code className="font-mono">send_department_message</code>. Leave blank to have OE
+                      <code className="font-mono">send_department_message</code>. Leave blank to have C-Suite
                       fall back to DMing the department head.
                     </p>
                     <div className="space-y-2">
