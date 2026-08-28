@@ -1,0 +1,56 @@
+C-Suite
+Copyright 2026 Akio Tanaka
+
+Este producto deriva de Open Executive
+(https://github.com/SenteLabsAI/OpenExecutive),
+Copyright 2025 Open Executive Contributors,
+distribuido bajo la Licencia Apache, Versión 2.0.
+
+Puedes obtener una copia de la licencia en:
+    http://www.apache.org/licenses/LICENSE-2.0
+
+---
+
+REGISTRO DE CAMBIOS RESPECTO AL ORIGINAL
+(requerido por la sección 4(b) de la Licencia Apache 2.0)
+
+- 2026-08-28: Fork inicial desde OpenExecutive @ 3a48f77.
+- 2026-08-28: CLAUDE.md reescrito con convenciones propias de documentación,
+  ramas y commits; eliminadas las referencias a la infraestructura de despliegue
+  de SenteLabsAI.
+- 2026-08-28: URLs del repositorio (badges, clone, metadatos del paquete)
+  reapuntadas a akiotanaka847/C-Suite.
+- 2026-08-28: .github/CODEOWNERS reasignado al propietario de este fork.
+- 2026-08-28: Workflows de despliegue (deploy.yml, deploy-qa.yml) cambiados a
+  ejecución manual — el trigger en push queda comentado hasta que existan apps
+  de Fly propias y sus secretos.
+
+---
+
+NOTA SOBRE EL TEXTO DE LA LICENCIA
+
+El archivo LICENSE heredado del proyecto original se titula "Apache License,
+Version 2.0", pero su texto NO es idéntico al canónico publicado por la Apache
+Software Foundation en https://www.apache.org/licenses/LICENSE-2.0.txt.
+Es una versión abreviada/parafraseada. Se conserva sin modificar porque
+representa los términos bajo los que se recibió realmente la obra.
+
+Diferencias materiales respecto al texto canónico:
+
+- Sección 3 (Patentes): se omite la limitación del alcance a las
+  reivindicaciones "necesariamente infringidas" por la contribución, y se
+  omite por completo la cláusula de terminación por litigio de patentes.
+- Sección 4: falta el párrafo que permite expresamente añadir declaraciones
+  de copyright propias y términos adicionales o distintos a las
+  modificaciones propias.
+- Sección 4(c)(d): los requisitos sobre avisos de atribución y el archivo
+  NOTICE están abreviados.
+- Sección 6 (Marcas): se omite la excepción de uso razonable y habitual para
+  describir el origen de la obra.
+- Sección 7 (Garantía): la exención está debilitada respecto al original.
+- Sección 9: se omite el requisito de indemnización a los contribuidores.
+- Falta el APÉNDICE completo ("How to apply the Apache License to your work").
+
+Consecuencia práctica: los detectores automáticos de licencias (incluido
+GitHub) no lo reconocen como Apache-2.0 y lo marcan como "NOASSERTION". Para
+usos comerciales conviene consultar asesoría legal.

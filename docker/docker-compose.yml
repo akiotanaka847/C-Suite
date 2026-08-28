@@ -1,0 +1,46 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - VECTOR_STORE_PATH=/data/chroma_db
+      - COMPANY_PROFILE_PATH=/data/company/profile.yaml
+      - EPISODIC_DB_PATH=/data/episodic_memory.db
+      - ENABLE_CACHING=${ENABLE_CACHING:-true}
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN:-}
+      - SLACK_APP_TOKEN=${SLACK_APP_TOKEN:-}
+      # Outbound email goes through the Gmail Workspace MCP authenticated as
+      # this address (see .env.example / docs). Leave blank to disable email.
+      - EXEC_EMAIL_ADDRESS=${EXEC_EMAIL_ADDRESS:-}
+    volumes:
+      - executive_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  ui:
+    image: node:22-alpine
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../packages/ui:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      # Reach the API over the compose network (the UI proxy/auth default of
+      # localhost:8000 resolves to the UI container itself, not the API).
+      - BACKEND_BASE_URL=http://api:8000
+    depends_on:
+      - api
+
+volumes:
+  executive_data:
+    driver: local
