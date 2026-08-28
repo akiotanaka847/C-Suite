@@ -1,15 +1,22 @@
+import Image from "next/image";
+
 type BrandMarkSize = "sm" | "md" | "lg";
 
+// Rendered pixel size per slot. The emblem is served from `public/brand/`,
+// which middleware.ts must keep ungated — the sign-in page renders it before
+// any session exists.
 const BOX_CLASSES: Record<BrandMarkSize, string> = {
-  sm: "w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/20",
-  md: "w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/20",
-  lg: "w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-xl shadow-indigo-500/25",
+  sm: "h-7 w-7",
+  md: "h-7 w-7",
+  lg: "h-12 w-12",
 };
 
-const TEXT_CLASSES: Record<BrandMarkSize, string> = {
-  sm: "text-white text-[10px] tracking-tight font-bold",
-  md: "text-white text-[10px] tracking-tight font-semibold",
-  lg: "text-white text-base tracking-tight font-bold",
+// Two source files rather than one: the 96px asset is 18 KB and covers the
+// sm/md slots, while lg would visibly soften if upscaled from it.
+const SOURCES: Record<BrandMarkSize, { src: string; w: number; h: number }> = {
+  sm: { src: "/brand/emblem-96.png", w: 82, h: 96 },
+  md: { src: "/brand/emblem-96.png", w: 82, h: 96 },
+  lg: { src: "/brand/emblem-256.png", w: 220, h: 256 },
 };
 
 interface BrandMarkProps {
@@ -17,9 +24,16 @@ interface BrandMarkProps {
 }
 
 export default function BrandMark({ size = "sm" }: BrandMarkProps) {
+  const { src, w, h } = SOURCES[size];
   return (
-    <div className={BOX_CLASSES[size]} aria-hidden>
-      <span className={TEXT_CLASSES[size]}>C-Suite</span>
-    </div>
+    <Image
+      src={src}
+      alt=""
+      width={w}
+      height={h}
+      aria-hidden
+      priority={size === "lg"}
+      className={`${BOX_CLASSES[size]} object-contain`}
+    />
   );
 }

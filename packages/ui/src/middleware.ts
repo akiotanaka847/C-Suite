@@ -20,6 +20,14 @@ export default auth((req) => {
 // Exclude Auth.js's own routes, Next internals, static assets, and exactly
 // `/signin` (with optional trailing slash). Using `signin/?` rather than the
 // looser `signin` keeps unrelated paths like `/signin-help` gated.
+//
+// `brand/` holds the logo files under `public/`. They must be reachable
+// unauthenticated because the sign-in page itself renders the emblem — gate
+// them and the logo 302s to /signin, which renders as a broken image on the
+// very page doing the redirecting. Public branding assets carry nothing
+// sensitive; anything under `public/` that does should not live there.
 export const config = {
-  matcher: ["/((?!api/auth|_next/static|_next/image|favicon.ico|signin/?$).*)"],
+  matcher: [
+    "/((?!api/auth|_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|brand/|signin/?$).*)",
+  ],
 };

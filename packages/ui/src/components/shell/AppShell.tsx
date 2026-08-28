@@ -325,6 +325,9 @@ function TopBar({
         >
           <Icon name="menu" size="w-5 h-5" />
         </button>
+        <Link href="/" aria-label="C-Suite home" className="flex-shrink-0">
+          <BrandMark size="sm" />
+        </Link>
         <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 min-w-0">
           {crumbs.length === 0 ? (
             <span className="text-sm text-fg-muted">C-Suite</span>

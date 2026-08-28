@@ -1,4 +1,5 @@
 import { signIn, auth } from "@/auth";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 
 // Mirrors the guard in auth.ts. Both must hold or the button is not rendered
@@ -32,8 +33,24 @@ export default async function SignInPage({ searchParams }: { searchParams: Searc
   return (
     <main className="min-h-screen flex items-center justify-center px-6">
       <div className="w-full max-w-sm rounded-2xl border border-line bg-surface/60 p-8 shadow-xl">
-        <h1 className="text-xl font-semibold tracking-tight text-fg">C-Suite</h1>
-        <p className="mt-2 text-sm text-fg-muted">Sign in to continue.</p>
+        <div className="flex flex-col items-center text-center">
+          <Image
+            src="/brand/emblem-256.png"
+            alt=""
+            width={220}
+            height={256}
+            priority
+            className="h-20 w-auto"
+          />
+          <h1 className="mt-4 text-2xl font-bold uppercase tracking-[0.18em] text-fg">
+            C&#8209;Suite
+          </h1>
+          <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.16em] text-fg-muted">
+            Agent Orchestrator
+          </p>
+        </div>
+
+        <p className="mt-6 text-sm text-fg-muted">Sign in to continue.</p>
 
         {errorMessage && (
           <p className="mt-4 rounded-md border border-red-900/50 bg-red-950/40 px-3 py-2 text-sm text-red-200">

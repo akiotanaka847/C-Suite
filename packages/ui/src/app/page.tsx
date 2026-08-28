@@ -311,6 +311,7 @@ export default function HomePage() {
             >
               <Icon name="menu" size="w-5 h-5" />
             </button>
+            <BrandMark size="sm" />
             <span className="text-xs text-fg-muted font-medium truncate">
               {isOnboarded && companyName ? `${companyName} · Executive` : "Executive"}
             </span>
