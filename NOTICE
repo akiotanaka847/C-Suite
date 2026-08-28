@@ -1,0 +1,26 @@
+C-Suite
+Copyright 2026 Akio Tanaka
+
+Este producto deriva de Open Executive
+(https://github.com/SenteLabsAI/OpenExecutive),
+Copyright 2025 Open Executive Contributors,
+distribuido bajo la Licencia Apache, Versión 2.0.
+
+Puedes obtener una copia de la licencia en:
+    http://www.apache.org/licenses/LICENSE-2.0
+
+---
+
+REGISTRO DE CAMBIOS RESPECTO AL ORIGINAL
+(requerido por la sección 4(b) de la Licencia Apache 2.0)
+
+- 2026-08-28: Fork inicial desde OpenExecutive @ 3a48f77.
+- 2026-08-28: CLAUDE.md reescrito con convenciones propias de documentación,
+  ramas y commits; eliminadas las referencias a la infraestructura de despliegue
+  de SenteLabsAI.
+- 2026-08-28: URLs del repositorio (badges, clone, metadatos del paquete)
+  reapuntadas a akiotanaka847/C-Suite.
+- 2026-08-28: .github/CODEOWNERS reasignado al propietario de este fork.
+- 2026-08-28: Workflows de despliegue (deploy.yml, deploy-qa.yml) cambiados a
+  ejecución manual — el trigger en push queda comentado hasta que existan apps
+  de Fly propias y sus secretos.
