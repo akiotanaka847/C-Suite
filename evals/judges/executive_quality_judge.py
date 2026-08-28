@@ -57,7 +57,7 @@ Return JSON only:
 {{"persona_coherence": N, "domain_accuracy": N, "actionability": N, "topic_coverage": N, "specificity": N, "overall": N, "notes": "1-2 sentence assessment"}}"""
 
     message = await client.messages.create(
-        model="claude-opus-4-7",
+        model="claude-opus-5",
         max_tokens=400,
         system=JUDGE_SYSTEM_PROMPT,
         messages=[{"role": "user", "content": prompt}],

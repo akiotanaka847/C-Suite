@@ -23,8 +23,8 @@ from csuite.providers.provider import LLMProvider
 # Anthropic-direct slugs — used as canonical model names everywhere in
 # the codebase (config defaults, agent class defaults, override DB).
 ANTHROPIC_DIRECT_MODELS: list[str] = [
-    "claude-opus-4-7",
-    "claude-sonnet-4-6",
+    "claude-opus-5",
+    "claude-sonnet-5",
     "claude-haiku-4-5-20251001",
 ]
 
@@ -51,10 +51,42 @@ OPENROUTER_MODELS: list[str] = [
 # Per-Claude OpenRouter slug. The Anthropic-direct name is the registry
 # key; the value is what we send when OPENROUTER_ENABLED is on.
 _CLAUDE_OPENROUTER_SLUGS: dict[str, str] = {
-    "claude-opus-4-7": "anthropic/claude-opus-4.7",
-    "claude-sonnet-4-6": "anthropic/claude-sonnet-4.6",
+    "claude-opus-5": "anthropic/claude-opus-5",
+    "claude-sonnet-5": "anthropic/claude-sonnet-5",
     "claude-haiku-4-5-20251001": "anthropic/claude-haiku-4.5",
+    # Generaciones anteriores: se mantienen a propósito. Este dict es también
+    # el predicado ``_is_claude()``, así que una instalación cuyo .env todavía
+    # fije DEFAULT_MODEL=claude-sonnet-4-6 seguiría reconociéndose como Claude
+    # en lugar de caer al 400 de "requiere OPENROUTER_ENABLED".
+    "claude-opus-4-8": "anthropic/claude-opus-4.8",
+    "claude-opus-4-7": "anthropic/claude-opus-4.7",
+    "claude-opus-4-6": "anthropic/claude-opus-4.6",
+    "claude-sonnet-4-6": "anthropic/claude-sonnet-4.6",
 }
+
+
+# Modelos Claude que eliminaron ``temperature`` / ``top_p`` / ``top_k``: pasar
+# cualquiera de los tres devuelve 400. Opus los quitó en 4.7, pero Sonnet los
+# aceptó hasta 4.6 — por eso un salto Sonnet 4.6 → Sonnet 5 convierte en error
+# un ``temperature`` que llevaba tiempo funcionando sin quejarse.
+_NO_SAMPLING_PREFIXES: tuple[str, ...] = (
+    "claude-opus-4-7",
+    "claude-opus-4-8",
+    "claude-opus-5",
+    "claude-sonnet-5",
+    "claude-fable-5",
+    "claude-mythos-5",
+)
+
+
+def supports_sampling_params(model: str) -> bool:
+    """¿Acepta ``model`` los parámetros de muestreo?
+
+    Se consulta antes de añadir ``temperature`` a una llamada. Devuelve True
+    para lo desconocido (modelos locales, slugs de OpenRouter): ahí el
+    parámetro es válido y suprimirlo cambiaría el comportamiento.
+    """
+    return not model.startswith(_NO_SAMPLING_PREFIXES)
 
 
 _CLAUDE_FEATURE_SPEC = FeatureSpec(

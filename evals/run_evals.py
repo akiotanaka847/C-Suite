@@ -75,7 +75,7 @@ Respond in JSON format:
 {{"persona_coherence": N, "domain_accuracy": N, "actionability": N, "topic_coverage": N, "specificity": N, "overall": N, "notes": "brief explanation"}}"""
 
     message = await client.messages.create(
-        model="claude-opus-4-7",
+        model="claude-opus-5",
         max_tokens=500,
         messages=[{"role": "user", "content": judge_prompt}],
     )
@@ -151,7 +151,7 @@ Respond in JSON:
 {{"structure": N, "specificity": N, "actionability": N, "coherence": N, "completeness": N, "overall": N, "notes": "brief"}}"""
 
     message = await client.messages.create(
-        model="claude-opus-4-7",
+        model="claude-opus-5",
         max_tokens=500,
         messages=[{"role": "user", "content": judge_prompt}],
     )

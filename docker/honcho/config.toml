@@ -65,17 +65,17 @@ base_url  = "https://openrouter.ai/api/v1"
 
 [dialectic.levels.medium.model_config]
 transport = "openai"
-model     = "anthropic/claude-sonnet-4.6"
+model     = "anthropic/claude-sonnet-5"
 base_url  = "https://openrouter.ai/api/v1"
 
 [dialectic.levels.high.model_config]
 transport = "openai"
-model     = "anthropic/claude-sonnet-4.6"
+model     = "anthropic/claude-sonnet-5"
 base_url  = "https://openrouter.ai/api/v1"
 
 [dialectic.levels.max.model_config]
 transport = "openai"
-model     = "anthropic/claude-sonnet-4.6"
+model     = "anthropic/claude-sonnet-5"
 base_url  = "https://openrouter.ai/api/v1"
 
 [dream]
@@ -90,7 +90,7 @@ ENABLED = true
 
 [dream.deduction.model_config]
 transport = "openai"
-model     = "anthropic/claude-sonnet-4.6"
+model     = "anthropic/claude-sonnet-5"
 base_url  = "https://openrouter.ai/api/v1"
 
 # -------------------------------------------------------------------- #

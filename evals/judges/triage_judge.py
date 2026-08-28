@@ -11,7 +11,7 @@ from typing import Any
 
 import anthropic
 
-JUDGE_MODEL = "claude-opus-4-7"
+JUDGE_MODEL = "claude-opus-5"
 
 
 def _format_decision(decision: dict[str, Any]) -> str:

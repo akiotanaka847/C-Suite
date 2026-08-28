@@ -30,8 +30,8 @@ def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> TestClient:
 def test_list_models_returns_allowed_models(client: TestClient) -> None:
     res = client.get("/agents/models")
     assert res.status_code == 200
-    assert "claude-opus-4-7" in res.json()
-    assert "claude-sonnet-4-6" in res.json()
+    assert "claude-opus-5" in res.json()
+    assert "claude-sonnet-5" in res.json()
 
 
 def test_list_agents_returns_all_specialists(client: TestClient) -> None:
@@ -158,14 +158,14 @@ def test_test_endpoint_passes_draft_to_analyze(client: TestClient) -> None:
             json={
                 "query": "Hi",
                 "prompt": "DRAFT_PROMPT",
-                "model": "claude-sonnet-4-6",
+                "model": "claude-sonnet-5",
                 "use_deep_reasoning": False,
             },
         )
     assert res.status_code == 200, res.text
     assert res.json()["response"] == "draft answer"
     kw = create_mock.await_args.kwargs
-    assert kw["model"] == "claude-sonnet-4-6"
+    assert kw["model"] == "claude-sonnet-5"
     assert kw["system"][0]["text"] == "DRAFT_PROMPT"
 
     # And no DB row was written.
@@ -208,19 +208,19 @@ def test_get_executive_detail_uses_persona_default(client: TestClient) -> None:
 def test_patch_executive_persists_override(client: TestClient) -> None:
     res = client.patch(
         "/agents/executive",
-        json={"prompt": "You are a calm Executive.", "model": "claude-opus-4-7"},
+        json={"prompt": "You are a calm Executive.", "model": "claude-opus-5"},
     )
     assert res.status_code == 200
     detail = res.json()
     assert detail["prompt"] == "You are a calm Executive."
-    assert detail["model"] == "claude-opus-4-7"
+    assert detail["model"] == "claude-opus-5"
     assert detail["has_override"] is True
     assert set(detail["overridden_fields"]) >= {"prompt", "model"}
 
     # Re-fetch confirms persistence.
     again = client.get("/agents/executive").json()
     assert again["prompt"] == "You are a calm Executive."
-    assert again["model"] == "claude-opus-4-7"
+    assert again["model"] == "claude-opus-5"
 
 
 def test_reset_executive_override_clears_it(client: TestClient) -> None:
@@ -257,13 +257,13 @@ def test_executive_test_endpoint_uses_draft_prompt(client: TestClient) -> None:
             json={
                 "query": "Hello",
                 "prompt": "DRAFT_EXEC_PROMPT",
-                "model": "claude-sonnet-4-6",
+                "model": "claude-sonnet-5",
             },
         )
     assert res.status_code == 200, res.text
     assert res.json()["response"] == "exec preview"
     kw = create_mock.await_args.kwargs
-    assert kw["model"] == "claude-sonnet-4-6"
+    assert kw["model"] == "claude-sonnet-5"
     assert kw["system"][0]["text"] == "DRAFT_EXEC_PROMPT"
     # Test endpoint must not persist.
     assert client.get("/agents/executive").json()["has_override"] is False

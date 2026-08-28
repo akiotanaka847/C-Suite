@@ -36,16 +36,16 @@ class Settings(BaseSettings):
     # while this is unset.
     anthropic_api_key: str | None = Field(None, alias="ANTHROPIC_API_KEY")
 
-    default_model: str = Field("claude-sonnet-4-6", alias="DEFAULT_MODEL")
-    deep_reasoning_model: str = Field("claude-opus-4-7", alias="DEEP_REASONING_MODEL")
+    default_model: str = Field("claude-sonnet-5", alias="DEFAULT_MODEL")
+    deep_reasoning_model: str = Field("claude-opus-5", alias="DEEP_REASONING_MODEL")
     routing_model: str = Field("claude-haiku-4-5-20251001", alias="ROUTING_MODEL")
     # Model for the executive_research specialist fan-out (research-mode turn
     # only — the chat path still uses each agent's deep_reasoning_model). The
     # research turn is retrieve-from-web-search + summarize, which does not
     # need Opus-tier reasoning; running 7 specialists on Sonnet (deep reasoning
-    # off) instead of Opus 4.7 is the dominant cost lever for the workflow.
-    # Set RESEARCH_MODEL=claude-opus-4-7 to restore the prior behavior.
-    research_model: str = Field("claude-sonnet-4-6", alias="RESEARCH_MODEL")
+    # off) instead of Opus 5 is the dominant cost lever for the workflow.
+    # Set RESEARCH_MODEL=claude-opus-5 to restore the prior behavior.
+    research_model: str = Field("claude-sonnet-5", alias="RESEARCH_MODEL")
 
     vector_store_path: Path = Field(_ROOT / "chroma_db", alias="VECTOR_STORE_PATH")
     company_profile_path: Path = Field(
@@ -212,7 +212,7 @@ class Settings(BaseSettings):
     # full-pass revision on top of the draft, typically 5–12s.
     committee_extra_timeout_s: float = Field(60.0, alias="COMMITTEE_EXTRA_TIMEOUT_S")
 
-    # Reasoning effort for deep-reasoning specialists. Opus 4.7 only supports
+    # Reasoning effort for deep-reasoning specialists. Opus 5 only supports
     # `thinking.type=adaptive` paired with `output_config.effort`. Valid
     # values: "low", "medium", "high", "xhigh", "max". `low` is ~3x faster
     # and much cheaper; bump to `medium` when answers feel shallow.

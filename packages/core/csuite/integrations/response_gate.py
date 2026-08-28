@@ -19,7 +19,7 @@ import asyncio
 import logging
 import re
 from dataclasses import dataclass
-from typing import Literal
+from typing import Any, Literal
 
 logger = logging.getLogger(__name__)
 
@@ -141,6 +141,7 @@ async def should_respond(
         from csuite.agents.utility_fast import get_fast_model
         from csuite.config import get_settings
         from csuite.providers import get_provider
+        from csuite.providers.registry import supports_sampling_params
 
         model = get_fast_model()
         provider = get_provider(model)
@@ -176,14 +177,21 @@ async def should_respond(
             f"Should {bot_label} reply? Output 'YES' or 'NO|<reason>'."
         )
 
+        create_kwargs: dict[str, Any] = {
+            "model": model,
+            "max_tokens": _GATE_MAX_TOKENS,
+            "system": _RESPONSE_GATE_SYSTEM,
+            "messages": [{"role": "user", "content": prompt}],
+        }
+        # El modelo utility-fast es sobreescribible desde la UI del Council, así
+        # que no se puede asumir Haiku aquí. Opus 4.7+ y Sonnet 5 eliminaron los
+        # parámetros de muestreo y devuelven 400 si llegan; en esos casos se
+        # omite ``temperature`` en lugar de romper el gate.
+        if supports_sampling_params(model):
+            create_kwargs["temperature"] = 0
+
         response = await asyncio.wait_for(
-            provider.messages_create(
-                model=model,
-                max_tokens=_GATE_MAX_TOKENS,
-                temperature=0,
-                system=_RESPONSE_GATE_SYSTEM,
-                messages=[{"role": "user", "content": prompt}],
-            ),
+            provider.messages_create(**create_kwargs),
             timeout=gate_timeout,
         )
         raw = "".join(
